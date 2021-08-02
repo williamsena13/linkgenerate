@@ -12,8 +12,15 @@
 */
 
 $router->get('/', 'HomeController@index');
+$router->get('links' , 'LinksController@index');
 
-$router->get('/{route:.*}/', function ()  {
-    return view('app');
+$router->group(['prefix' => 'api'], function ($router) {
+
+
+
 });
+
+//$router->get('/{route:.*}/', function ()  {
+    //return view('app');
+//});
 

@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -17418,11 +17418,12 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 5 */,
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(0);
+__webpack_require__(0);
+(function webpackMissingModule() { throw new Error("Cannot find module \"D:\\laragon\\www\\linkgenerate\\resources\\scss\\app.scss\""); }());
+(function webpackMissingModule() { throw new Error("Cannot find module \"D:\\laragon\\www\\linkgenerate\\resources\\sass\\app.scss\""); }());
 
 
 /***/ })
