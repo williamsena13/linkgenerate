@@ -7,8 +7,8 @@
     <div class="links">
         <div class="row">
 
-
         </div>
+
         <div class="container mt-4">
                 <div class="card">
 
@@ -16,15 +16,17 @@
                         <div class="row">
                             <div class="col-sm-9">
                                 <h3 class="card-title">{{ getTitle }}<i class="fa fa-globe"></i></h3>
+                                <p class="text-gray-500"><small class="text-gray-500">{{ getSubTitle }}</small></p>
                             </div>
 
                             <div class="col-sm-3 row">
-                                <router-link :class="['btn btn-light btn-link btn-sm btn-block mb-2']" to="/create">Criar um Link!</router-link>
+                                <router-link :class="['btn btn-light btn-link btn-lg btn-block mb-2']" to="/create">Criar um Link!</router-link>
                                 <button type="button" class="btn btn-light btn-link btn-sm btn-block mb-2" @click="getLinks()">AQUI</button>
                             </div>
 
                         </div>
-                        <h6 class="text-gray-500"><small class="text-gray-500">{{ getSubTitle }}</small></h6>
+
+
                         <hr>
 
                         <div class="row">
@@ -52,29 +54,14 @@
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <ul class="list-group">
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            Cras justo odio
-                                            <span class="badge badge-primary badge-pill">14</span>
-                                        </li>
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            Dapibus ac facilisis in
-                                            <span class="badge badge-primary badge-pill">2</span>
-                                        </li>
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            Morbi leo risus
-                                            <span class="badge badge-pill">1</span>
-                                        </li>
-                                    </ul>
-                                </div>
-
-
                             </div>
                             <div class="col-6">
                                 <h4>04 Links</h4>
                             </div>
                         </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/" class="btn btn-md btn-outline-dark mr-2">voltar</a>
                     </div>
                 </div>
             </div>
@@ -93,9 +80,9 @@
                                 <table class="table table-hover table-bordered">
                                     <thead>
                                     <tr>
-                                        <th>TITLE</th>
-                                        <th>KONTEN</th>
-                                        <th>AKSI</th>
+                                        <th>Link</th>
+                                        <th>Default</th>
+                                        <th>Clicks</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -133,20 +120,6 @@
       },
       components:{
       },
-      computed : {
-          getTitle(){
-              return this.title;
-          },
-          getSubTitle(){
-              return this.subtitle;
-          },
-
-      },
-      mounted() {
-          this.title = 'Links de Redirecionamento!'
-          this.subtitle = 'Crie seus links de redirecionamento em poucos passos'
-      },//mounted()
-
       methods: {
           created() {
             axios.get('http://localhost:8000/links').then(response => {
@@ -158,15 +131,46 @@
               this.link = data;
           },
           async getLinks(){
-                console.log('getLinks()');
-                axios.defaults.headers.post['Content-Type'] ='application/json;charset=utf-8';
-                axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 
-                axios.get('http://localhost:8000/links')
-                .then(response => console.log( response.data ))
-                .catch(error => {
-                    console.error('There was an error!', error);
-                });
+            console.log('getLinks()');
+            axios.defaults.headers.post['Content-Type'] ='application/json;charset=utf-8';
+            axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+
+            try {
+                this.$http.get('http://cep.infinitysoft.com.br/cep/86801270').then((req) => this.cep = req.cep)
+            } catch (error) {
+                console.log("erro em outro",error);
+
+            }
+
+            try {
+                axios.get('https://cep.infinitysoft.com.br/cep/86800140')
+                    .then(response => {
+                        alert('Estou no sucesso do CEP')
+                        console.log( response )
+                    })
+                    .catch( error => {
+                        alert('ERRO AO BUSCAR CEP');
+                        console.log( error )
+                    });
+            } catch (err) {
+                console.log(">> ERRO AO BUSCAR CEP << ", err);
+            }
+
+            try {
+                axios.get("http://localhost:8000/links")
+                    .then(response => {
+                        alert('Estou no sucesso do link')
+                        console.log( response.data )
+                    })
+                    .catch(error => {
+                        alert('Estou no sucesso do link')
+                        console.log( error );
+                    });
+            } catch (err) {
+                console.log(">> ERRO AO BUSCAR LINK << ", err);
+            }
+
 
                 /*
                 axios.get('http://localhost:8000/links')
@@ -183,6 +187,19 @@
           }
 
 
-      }// methods
+      },// methods
+      computed : {
+          getTitle(){
+              return this.title;
+          },
+          getSubTitle(){
+              return this.subtitle;
+          },
+
+      },
+      mounted() {
+          this.title = 'Links de Redirecionamento!'
+          this.subtitle = 'Crie seus links de redirecionamento em poucos passos'
+      },//mounted()
     }//
 </script>

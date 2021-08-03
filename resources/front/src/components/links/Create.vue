@@ -52,13 +52,13 @@
     import axios from 'axios'
 
     export default {
-        data() {
-            return {
-                link: {},
-                validation: []
-            }
+        name : "LinksCreate",
+        propos : {
+            link : [],
+            validation : []
         },
         methods: {
+            //*************************************************************
             LinkStore() {
                 axios.post('http://localhost:8000/links', this.link)
                     .then((response) => {
@@ -69,7 +69,19 @@
                     }).catch(error => {
                     this.validation = error.response.data.data;
                 });
+            },
+            //*************************************************************
+            async postUserAjax() {
+                //
+                //var id = 1;
+                //var uri = "http://localhost:8000/links";
+
+                this.$http.get('http://cep.infinitysoft.com.br/cep/86801270').then((req) => this.cep = req.cep)
+
             }
+        },
+        mounted(){
+
         }
     }
 </script>

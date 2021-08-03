@@ -6,6 +6,19 @@
 
 <script>
     export default {
+        name : "LinksEdit",
+        propos : {
+
+        },
+        components : {
+
+        },
+        methods : {
+
+        },
+        mounted(){
+
+        }
 
     }
 </script>
