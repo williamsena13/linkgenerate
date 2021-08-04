@@ -1,87 +1,77 @@
 <template>
-    <div class="links">
-        <div class="container mt-5">
-            <div class="row justify-content-center">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">
-                            Criar Link
-                        </div>
-                        <form @submit.prevent="LinkStore">
-                            <div class="card-body">
+  <div class="row">
+      <form >
+    <div class="card">
+        <div class="card-header bg-dark text-white">
+            <h5>Criação de Link</h5>
+        </div>
+        <div class="card-body">
 
-                                <div class="form-group">
-                                    <label>TITULO</label>
-                                    <input type="text" class="form-control" v-model="link.title"
-                                           placeholder="Masukkan Title">
-                                    <div v-if="validation.title">
-                                        <div class="alert alert-danger mt-1" role="alert">
-                                            {{ validation.title[0] }}
-                                        </div>
-                                    </div>
-                                </div>
+            <strong>Título do Link</strong>
+            <input type="text" class="form-control" placeholder="Digite um Link">
+            <br>
+            <div class="form-group">
+                <h5 class="text-primary">URL original</h5>
+                <p>Você poderá inserir uma ou várias URL's, faça como desejar. Lembre-se de inserir a quantidade de cliques junto à URL.</p>
+                <grid-itens></grid-itens>
 
 
-                                <div class="form-group">
-                                    <label>URL</label>
-                                    <input type="text" class="form-control" v-model="link.url"
-                                           placeholder="Digite URL">
-                                    <div v-if="validation.url">
-                                        <div class="alert alert-danger mt-1" role="alert">
-                                            {{ validation.url[0] }}
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                            </div>
-                            <div class="card-footer">
-                                <button type="submit" class="btn btn-md btn-success mr-2">Salvar</button>
-                                <button type="reset" class="btn btn-md btn-danger">Reset</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
             </div>
+            <br>
+            <h5 class="text-primary">URL original</h5>
+            <p>Você poderá inserir uma ou várias URL's, faça como desejar. Lembre-se de inserir a quantidade de cliques junto à URL.</p>
+            <input type="url" class="form-control" id="exampleInputPassword1" placeholder="Insira a URL Default">
+        </div>
+        <div class="card-footer">
+            <a href="/links" class="btn btn-default"><i class="fa fa-plus"></i> Voltar</a>
+            <button class="btn btn-primary pull-right"><i class="fa fa-plus"></i> Salvar Link</button>
         </div>
     </div>
+</form>
+  </div>
 </template>
 
 
 <script>
-    import axios from 'axios'
+import axios from "axios";
 
-    export default {
-        name : "LinksCreate",
-        propos : {
-            link : [],
-            validation : []
-        },
-        methods: {
-            //*************************************************************
-            LinkStore() {
-                axios.post('http://localhost:8000/links', this.link)
-                    .then((response) => {
-                        this.$router.push({
-                            name: 'links'
-                        });
-                        console.log(response.data.data);
-                    }).catch(error => {
-                    this.validation = error.response.data.data;
-                });
-            },
-            //*************************************************************
-            async postUserAjax() {
-                //
-                //var id = 1;
-                //var uri = "http://localhost:8000/links";
+export default {
+  name: "LinksCreate",
+  propos: {
+    link: [],
+    validation: [],
+  },
+  methods: {
+    //*************************************************************
+    LinkStore() {
+      axios
+        .post("http://localhost:8000/links", this.link)
+        .then((response) => {
+          this.$router.push({
+            name: "links",
+          });
+          console.log(response.data.data);
+        })
+        .catch((error) => {
+          this.validation = error.response.data.data;
+        });
+    },
+    //*************************************************************
+    async postUserAjax() {
+      //
+      //var id = 1;
+      //var uri = "http://localhost:8000/links";
 
-                this.$http.get('http://cep.infinitysoft.com.br/cep/86801270').then((req) => this.cep = req.cep)
-
-            }
-        },
-        mounted(){
-
-        }
+      this.$http
+        .get("http://cep.infinitysoft.com.br/cep/86801270")
+        .then((req) => (this.cep = req.cep));
+    },
+    //*************************************************************
+    addLink(){
+        console.log( document.getElementById('edit_url').value );
+        console.log( document.getElementById('edit_clicks').value );
     }
+  },
+  mounted() {},
+};
 </script>

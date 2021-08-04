@@ -22,6 +22,11 @@ import LinksIndex from './components/links/Index';
 import LinksCreate from './components/links/Create'
 import LinksEdit from './components/links/Edit'
 
+import GridItens from './components/links/GridItens'
+
+
+Vue.component('grid-itens', GridItens)
+
 Vue.config.productionTip = false
 
 const router = new VueRouter({
