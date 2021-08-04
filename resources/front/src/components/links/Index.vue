@@ -6,9 +6,18 @@
 
 <template>
   <div class="links">
-    <div class="row"></div>
+    <div class="row">
+        <!-- -->
 
-    <div class="container mt-4">
+        <!-- -->
+    </div>
+
+
+
+    <div class="row">
+
+        <div class="col-md-8">
+<div class="container mt-4">
       <div class="card">
         <div class="card-body">
           <div class="row">
@@ -21,18 +30,10 @@
               </p>
             </div>
 
-            <div class="col-sm-3 row">
-              <router-link
-                :class="['btn btn-light btn-link btn-lg btn-block mb-2']" to="/create"
-                >Criar um Link!</router-link
-              >
-              <button
-                type="button"
-                class="btn btn-light btn-link btn-sm btn-block mb-2"
-                @click="getLinks()"
-              >
-                AQUI
-              </button>
+            <div class="col-sm-3">
+                <button class="btn btn-outline-primary btn-block" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Criar um Link
+                </button>
             </div>
           </div>
 
@@ -121,6 +122,15 @@
           </div>
         </div>
       </div>
+    </div>
+
+        </div>
+
+        <div class="col-md-4">
+            <div class="collapse" id="collapseExample">
+                <card-create></card-create>
+            </div>
+        </div>
     </div>
   </div>
 </template>

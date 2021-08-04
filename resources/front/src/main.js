@@ -26,6 +26,7 @@ import GridItens from './components/links/GridItens'
 
 
 Vue.component('grid-itens', GridItens)
+Vue.component('card-create', LinksCreate)
 
 Vue.config.productionTip = false
 
