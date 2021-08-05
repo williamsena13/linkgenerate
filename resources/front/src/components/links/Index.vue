@@ -16,7 +16,7 @@
 
     <div class="row">
 
-        <div class="col-md-8">
+        <div class="col-md-6">
 <div class="container mt-4">
       <div class="card">
         <div class="card-body">
@@ -126,7 +126,7 @@
 
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="collapse" id="collapseExample">
                 <card-create></card-create>
             </div>

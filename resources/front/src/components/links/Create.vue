@@ -6,6 +6,9 @@
             <h5>Criação de Link</h5>
         </div>
         <div class="card-body">
+            <strong>Título do Link</strong>
+            <input type="text" class="form-control" placeholder="Link de Entrada" id="edit_input_link" disabled>
+            <br>
 
             <strong>Título do Link</strong>
             <input type="text" class="form-control" placeholder="Digite um Link">
@@ -14,8 +17,6 @@
                 <h5 class="text-primary">URL original</h5>
                 <p>Você poderá inserir uma ou várias URL's, faça como desejar. Lembre-se de inserir a quantidade de cliques junto à URL.</p>
                 <grid-itens></grid-itens>
-
-
             </div>
             <br>
             <h5 class="text-primary">URL original</h5>
@@ -23,7 +24,7 @@
             <input type="url" class="form-control" id="exampleInputPassword1" placeholder="Insira a URL Default">
         </div>
         <div class="card-footer">
-            <a href="/links" class="btn btn-default"><i class="fa fa-plus"></i> Voltar</a>
+            <a href="/links" class="btn btn-default"><i class="fa fa-arrow-left"></i> Voltar</a>
             <button class="btn btn-primary pull-right"><i class="fa fa-plus"></i> Salvar Link</button>
         </div>
     </div>
@@ -63,15 +64,21 @@ export default {
       //var uri = "http://localhost:8000/links";
 
       this.$http
-        .get("http://cep.infinitysoft.com.br/cep/86801270")
+        .get("http://cep.infinitysoft.com.br/cep/86801270" )
         .then((req) => (this.cep = req.cep));
     },
     //*************************************************************
     addLink(){
         console.log( document.getElementById('edit_url').value );
         console.log( document.getElementById('edit_clicks').value );
+    },
+    generate(){
+        document.getElementById('edit_input_link').value = "https://www.meudominio.com/" +  Math.random().toString(30)
     }
+
   },
-  mounted() {},
+  mounted() {
+      this.generate();
+  },
 };
 </script>
