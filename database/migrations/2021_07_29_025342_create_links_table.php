@@ -16,7 +16,7 @@ class CreateLinksTable extends Migration
         Schema::create('links', function (Blueprint $table) {
             $table->id();
             $table->string('url');
-            $table->string('link');
+            $table->string('input_url');
             $table->smallInteger('count_clicks')->default(0);
             $table->smallInteger('limit_clicks')->default(0);
             $table->smallInteger('status')->default(1);

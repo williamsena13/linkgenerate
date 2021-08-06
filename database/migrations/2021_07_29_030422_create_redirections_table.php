@@ -17,7 +17,7 @@ class CreateRedirectionsTable extends Migration
             $table->id();
             $table->string('title');
             $table->string('redirect_url');
-            $table->string('default_url');
+            $table->string('default_url')->nullable();
             $table->smallInteger('status')->default(1);
             $table->timestamps();
 

@@ -5,12 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Links;
 use Illuminate\Http\Request;
 
-
-
-
 class LinksController extends Controller
 {
-    public static function index()
+    public function index()
     {
         //
         return Links::get();
@@ -29,16 +26,17 @@ class LinksController extends Controller
         //
         try {
             $link = new Links;
-            $link->input_url = $request->url;
-            $link->link = $request->input_link;
-            $link->count_clicks = isset( $request->count_clicks ) ? $request->count_clicks : null;
+            $link->url = $request->url;
+            $link->input_url = $request->input_url;
+            //$link->count_clicks = isset( $request->count_clicks ) ? $request->count_clicks : null;
             $link->limit_clicks = isset( $request->limit_clicks ) ? $request->limit_clicks : null;
             $link->expires = isset( $request->expires ) ? $request->expires : null;
-            //
+
+
             if ( $link->save() ){
-                return $link;
-            }//
-            //
+
+                return [ 'status' => 200, 'msg' => "link sotre", 'data' => $link];
+            }
         } catch (\Exception $e) {
             dd( 'status 500', "Erro >> {$e->getMessage()} << ao salvar link" , $e  ,$request->all());
             return [ 'status' => 500 , 'msg' => "Erro >> {$e->getMessage()} << when saving link!", 'e' , $e ];
@@ -88,7 +86,7 @@ class LinksController extends Controller
         return $link;
         //
 
-    }// edit*
+    }
 
     public function update(Request $request, Links $links)
     {

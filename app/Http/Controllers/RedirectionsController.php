@@ -10,7 +10,8 @@ class RedirectionsController extends Controller
     public function index()
     {
         //
-        return Redirections::get();
+        $valor = Redirections::get();
+        return $valor;
         //
     }
 
