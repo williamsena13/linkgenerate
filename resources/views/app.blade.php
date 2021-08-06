@@ -11,6 +11,7 @@
     <h1>My App</h1>
     <div id="app">
         <p>
+            <vc-grid-itens></vc-grid-itens>
             <router-link to="/foo">Go to Foo</router-link>
             <router-link to="/bar">Go to Bar</router-link>
         </p>

@@ -8,14 +8,14 @@
                 <tr>
                     <th scope="row"></th>
                     <td width="60%">
-                        <input type="text" @change="button()" class="form-control" id="edit_url" placeholder="Insira a URL original">
+                        <input type="text" @change="button()" class="form-control" id="url" placeholder="Insira a URL original">
                     </td>
 
                     <td>
-                        <input type="date" class="form-control" id="edit_limit_date" placeholder="data_limite">
+                        <input type="date" class="form-control" id="limit_date" placeholder="data_limite">
                     </td>
                     <td width="20%">
-                        <input type="number" min="0" class="form-control" id="edit_clicks" placeholder="Qtd cliques">
+                        <input type="number" min="0" class="form-control" id="clicks" placeholder="Qtd cliques">
                     </td>
                     <td width="10%">
                     </td>
@@ -56,7 +56,7 @@
                 //console.log( "aqui", td )
 
                 let td = document.createElement("td");
-                let url = document.getElementById('edit_url').value;
+                let url = document.getElementById('url').value;
                 td_value = document.createTextNode(url);
                 td.appendChild(td_value);
                 tr.appendChild(td);
@@ -64,8 +64,8 @@
 
                 td = document.createElement("td");
                 var sdate = " ";
-                if (document.getElementById('edit_limit_date').value.length > 0  ){
-                    sdate = document.getElementById('edit_limit_date').value;
+                if (document.getElementById('limit_date').value.length > 0  ){
+                    sdate = document.getElementById('limit_date').value;
                 }
                 td_value = document.createTextNode( new Date(sdate).toLocaleDateString("pt-br") );
                 td.appendChild(td_value);
@@ -73,8 +73,8 @@
 
                  td = document.createElement("td");
                 let count = 0;
-                if (document.getElementById('edit_clicks').value.length > 0  ){
-                    count = document.getElementById('edit_clicks').value.slice(-3);
+                if (document.getElementById('clicks').value.length > 0  ){
+                    count = document.getElementById('clicks').value.slice(-3);
                     if ( count < 10 ) {
                         count = "00" + count
                     }else
@@ -136,8 +136,8 @@
                 //td.appendChild(td_value);                              // Append the text to <li>
                 //tr.appendChild(td);
 
-                document.getElementById('edit_url').value = '';
-                document.getElementById('edit_clicks').value = '';
+                document.getElementById('url').value = '';
+                document.getElementById('clicks').value = '';
                 document.getElementById('btn_add_url').disabled = true;
 
 
@@ -146,8 +146,8 @@
             },// addLink()
             button(){
                 try {
-                    console.log( 'Aqui' , document.getElementById('edit_url').value, (document.getElementById('edit_url').value.length > 0) )
-                    document.getElementById('btn_add_url').disabled = (document.getElementById('edit_url').value.length < 1)
+                    console.log( 'Aqui' , document.getElementById('url').value, (document.getElementById('url').value.length > 0) )
+                    document.getElementById('btn_add_url').disabled = (document.getElementById('url').value.length < 1)
                 } catch (error) {
                     console.log('erro ao validar botão', error)
                 }

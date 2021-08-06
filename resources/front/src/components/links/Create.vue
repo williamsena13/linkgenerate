@@ -7,7 +7,7 @@
         </div>
         <div class="card-body">
             <strong>Título do Link</strong>
-            <input type="text" class="form-control" placeholder="Link de Entrada" id="edit_input_link" disabled>
+            <input type="text" class="form-control" placeholder="Link de Entrada" id="input_link" disabled>
             <br>
 
             <strong>Título do Link</strong>
@@ -64,16 +64,16 @@ export default {
       //var uri = "http://localhost:8000/links";
 
       this.$http
-        .get("http://cep.infinitysoft.com.br/cep/86801270" )
+        .get("localhost:8000/links/create" )
         .then((req) => (this.cep = req.cep));
     },
     //*************************************************************
     addLink(){
-        console.log( document.getElementById('edit_url').value );
-        console.log( document.getElementById('edit_clicks').value );
+        console.log( document.getElementById('url').value );
+        console.log( document.getElementById('clicks').value );
     },
     generate(){
-        document.getElementById('edit_input_link').value = "https://www.meudominio.com/" +  Math.random().toString(30)
+        document.getElementById('input_link').value = "https://www.meudominio.com/" +  Math.random().toString(30)
     }
 
   },
