@@ -1,6 +1,6 @@
 <template>
     <div class="pos">
-        <table class="table" id="table_url">
+        <table class="table table-responsive" id="table_url">
             <tbody id="itens_url">
 
             </tbody>
@@ -26,8 +26,12 @@
         <small>Expira em</small>
         <input type="date" min="0" class="form-control" id="expires" placeholder="Expira em">
         <hr>
+        <button type="button" class="btn btn-outline-primary" id="btn_add_url" @click="postLink()" disabled>
+            <i class="fa fa-plus"></i>
+            Adicionar mais URL
+        </button>
 
-        <button type="button" class="btn btn-outline-primary" id="btn_add_url" @click="postLink()" disabled><i class="fa fa-plus"></i> Adicionar mais URL</button>
+
     </div>
 </template>
 

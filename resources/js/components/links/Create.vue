@@ -15,12 +15,12 @@
                 <br>
                 <div class="form-group">
                     <h5 class="text-primary">URL original</h5>
-                    <p>Você poderá inserir uma ou várias URL's, faça como desejar. Lembre-se de inserir a quantidade de cliques junto à URL.</p>
+                    <p class="text-gray">Você poderá inserir uma ou várias URL's, faça como desejar. Lembre-se de inserir a quantidade de cliques junto à URL.</p>
                     <vc-grid-links></vc-grid-links>
                 </div>
-                <br>
-                <h5 class="text-primary">URL original</h5>
-                <p>Você poderá inserir uma ou várias URL's, faça como desejar. Lembre-se de inserir a quantidade de cliques junto à URL.</p>
+                <hr>
+                <h5 class="text-primary">URL Default</h5>
+                <p class="text-gray">Essa URL será associada ao redirecionamento apenas quando todas as outrsa chegarem ao limite de cliques. Ela será a uma url fix sem limitações.</p>
                 <input type="url" class="form-control" id="url_default" placeholder="Insira a URL Default">
             </div>
             <div class="card-footer">
@@ -82,17 +82,22 @@ export default {
         var default_url = document.getElementById('url_default').value;
 
         let obj = {
-            'title' : title,
-            'redirect_url' : redirect_url,
-            'default_url' : default_url
+            title : title,
+            redirect_url : redirect_url,
+            default_url : default_url
         }
         console.log( 'vou postar o objeto')
         console.log( obj )
 
-        Axios.post("http://localhost:8000/redirections", this.obj)
+        Axios.post("http://localhost:8000/redirections", obj)
+
         .then((response) => {
-            alert('budega salva com sucesso');
-          console.log(response.data.data);
+            console.log( 'Sucesso do post do redirections')
+            console.log(response )
+          console.log(response.data )
+          console.log(response.data.msg )
+          console.log(response.data.request_all)
+
         })
         .catch((error) => {
             console.log("ERRO AO POSTAR", error)
@@ -105,7 +110,11 @@ export default {
 
     },
     generate(){
-        document.getElementById('redirect_url').value = "https://www.meudominio.com/" +  Math.random().toString(30)
+        try {
+            document.getElementById('redirect_url').value = "https://www.meudominio.com/" + Math.random().toString(16).substring(4)
+        } catch (error) {
+            console.log("Erro no Generate", error)
+        }
     }
 
   },

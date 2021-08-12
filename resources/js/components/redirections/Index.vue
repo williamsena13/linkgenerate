@@ -72,6 +72,8 @@ export default {
         axios.get('http://localhost:8000/redirections')
             .then( response => {
                 try {
+                    console.log( 'Estou aqui no sucesso do redirections->get()' )
+                    console.log( response );
                     this.setRedirects(response.data)
                     document.getElementById('count_redirect').appendChild( document.createTextNode(response.data.length) );
                 } catch (error) {
@@ -80,7 +82,7 @@ export default {
 
             })
             .catch( error => {
-                console.log("Error", error)
+                console.log("Error do Redirection::get()", error)
             });
       },// getLinks()
       setRedirects( value ){

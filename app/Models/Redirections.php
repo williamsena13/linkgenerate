@@ -8,11 +8,11 @@ class Redirections extends Model
 {
     //
 
-    public function __construct()
-    {
-        $this->count_clicks = $this->getClick();
-        $this->limit_clicks = $this->getLimit();
-    }
+    //public function construct()
+    //{
+    //    $this->count_clicks = $this->getClick();
+    //    $this->limit_clicks = $this->getLimit();
+    //}
 
 
 

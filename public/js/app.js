@@ -2128,22 +2128,29 @@ __webpack_require__.r(__webpack_exports__);
       var redirect_url = document.getElementById('redirect_url').value;
       var default_url = document.getElementById('url_default').value;
       var obj = {
-        'title': title,
-        'redirect_url': redirect_url,
-        'default_url': default_url
+        title: title,
+        redirect_url: redirect_url,
+        default_url: default_url
       };
       console.log('vou postar o objeto');
       console.log(obj);
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("http://localhost:8000/redirections", this.obj).then(function (response) {
-        alert('budega salva com sucesso');
-        console.log(response.data.data);
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("http://localhost:8000/redirections", obj).then(function (response) {
+        console.log('Sucesso do post do redirections');
+        console.log(response);
+        console.log(response.data);
+        console.log(response.data.msg);
+        console.log(response.data.request_all);
       })["catch"](function (error) {
         console.log("ERRO AO POSTAR", error);
         _this2.validation = error.response.data.data;
       });
     },
     generate: function generate() {
-      document.getElementById('redirect_url').value = "https://www.meudominio.com/" + Math.random().toString(30);
+      try {
+        document.getElementById('redirect_url').value = "https://www.meudominio.com/" + Math.random().toString(16).substring(4);
+      } catch (error) {
+        console.log("Erro no Generate", error);
+      }
     }
   },
   mounted: function mounted() {
@@ -2164,6 +2171,10 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
 //
 //
 //
@@ -2577,6 +2588,9 @@ __webpack_require__.r(__webpack_exports__);
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('http://localhost:8000/redirections').then(function (response) {
         try {
+          console.log('Estou aqui no sucesso do redirections->get()');
+          console.log(response);
+
           _this.setRedirects(response.data);
 
           document.getElementById('count_redirect').appendChild(document.createTextNode(response.data.length));
@@ -2584,7 +2598,7 @@ __webpack_require__.r(__webpack_exports__);
           console.log("Erro ao atriburi linsk", error);
         }
       })["catch"](function (error) {
-        console.log("Error", error);
+        console.log("Error do Redirection::get()", error);
       });
     },
     // getLinks()
@@ -39278,7 +39292,7 @@ var render = function() {
                 _vm._v("URL original")
               ]),
               _vm._v(" "),
-              _c("p", [
+              _c("p", { staticClass: "text-gray" }, [
                 _vm._v(
                   "Você poderá inserir uma ou várias URL's, faça como desejar. Lembre-se de inserir a quantidade de cliques junto à URL."
                 )
@@ -39289,13 +39303,13 @@ var render = function() {
             1
           ),
           _vm._v(" "),
-          _c("br"),
+          _c("hr"),
           _vm._v(" "),
-          _c("h5", { staticClass: "text-primary" }, [_vm._v("URL original")]),
+          _c("h5", { staticClass: "text-primary" }, [_vm._v("URL Default")]),
           _vm._v(" "),
-          _c("p", [
+          _c("p", { staticClass: "text-gray" }, [
             _vm._v(
-              "Você poderá inserir uma ou várias URL's, faça como desejar. Lembre-se de inserir a quantidade de cliques junto à URL."
+              "Essa URL será associada ao redirecionamento apenas quando todas as outrsa chegarem ao limite de cliques. Ela será a uma url fix sem limitações."
             )
           ]),
           _vm._v(" "),
@@ -39363,39 +39377,43 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "pos" }, [
-    _c("table", { staticClass: "table", attrs: { id: "table_url" } }, [
-      _c("tbody", { attrs: { id: "itens_url" } }),
-      _vm._v(" "),
-      _c("tfoot", [
-        _c("tr", [
-          _c("th", { staticClass: "col-1", attrs: { scope: "row" } }, [
-            _vm._v("\n                    Nº\n                ")
-          ]),
-          _vm._v(" "),
-          _c("td", { staticClass: "col-6" }, [
-            _c("input", {
-              staticClass: "form-control",
-              attrs: {
-                type: "text",
-                id: "url_input",
-                placeholder: "Insira a URL original"
-              },
-              on: {
-                change: function($event) {
-                  return _vm.button()
+    _c(
+      "table",
+      { staticClass: "table table-responsive", attrs: { id: "table_url" } },
+      [
+        _c("tbody", { attrs: { id: "itens_url" } }),
+        _vm._v(" "),
+        _c("tfoot", [
+          _c("tr", [
+            _c("th", { staticClass: "col-1", attrs: { scope: "row" } }, [
+              _vm._v("\n                    Nº\n                ")
+            ]),
+            _vm._v(" "),
+            _c("td", { staticClass: "col-6" }, [
+              _c("input", {
+                staticClass: "form-control",
+                attrs: {
+                  type: "text",
+                  id: "url_input",
+                  placeholder: "Insira a URL original"
+                },
+                on: {
+                  change: function($event) {
+                    return _vm.button()
+                  }
                 }
-              }
-            })
-          ]),
-          _vm._v(" "),
-          _vm._m(0),
-          _vm._v(" "),
-          _c("td", { staticClass: "col-1" }, [
-            _vm._v("\n                    .\n                ")
+              })
+            ]),
+            _vm._v(" "),
+            _vm._m(0),
+            _vm._v(" "),
+            _c("td", { staticClass: "col-1" }, [
+              _vm._v("\n                    .\n                ")
+            ])
           ])
         ])
-      ])
-    ]),
+      ]
+    ),
     _vm._v(" "),
     _c("small", [_vm._v("Expira em")]),
     _vm._v(" "),
@@ -39417,7 +39435,10 @@ var render = function() {
           }
         }
       },
-      [_c("i", { staticClass: "fa fa-plus" }), _vm._v(" Adicionar mais URL")]
+      [
+        _c("i", { staticClass: "fa fa-plus" }),
+        _vm._v("\n        Adicionar mais URL\n    ")
+      ]
     )
   ])
 }

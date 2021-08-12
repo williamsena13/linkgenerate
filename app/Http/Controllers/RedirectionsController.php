@@ -23,19 +23,26 @@ class RedirectionsController extends Controller
     public function store(Request $request)
     {
         //
+
         try {
             $redirections = new Redirections;
             $redirections->title = $request->title;
             $redirections->redirect_url = $request->redirect_url;
             $redirections->default_url = $request->default_url;
 
-            $redirections->save();
 
-            return $redirections;
         } catch (\Exception $e) {
-            return [ 'status' => 500 , 'msg' => "Erro >> {$e->getMessage()} << when generating redirection!", 'e' , $e ];
+            return [ 'status' => 500 , 'msg' => $e->getMessage(), 'e' , $e , 'request_all' => $all];
         }
 
+        try {
+            $redirections->save();
+        } catch(\Exception $e) {
+            return [ 'status' => 500 ,'msg2' => "erro ao salvar", 'msg' => $e->getMessage(), 'e' , $e , 'redirections' => $redirections];
+        }
+
+
+        return ['status' => 200, 'obj' => $redirections , 'all' => $request->all(), 'request' => $request];
 
 
     }
