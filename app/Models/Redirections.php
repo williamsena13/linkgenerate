@@ -7,15 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Redirections extends Model
 {
     //
-
-    //public function construct()
-    //{
-    //    $this->count_clicks = $this->getClick();
-    //    $this->limit_clicks = $this->getLimit();
-    //}
-
-
-
     public function links()
     {
         return $this->hasMany(Links::class, 'url', 'default_url');
@@ -35,4 +26,5 @@ class Redirections extends Model
     {
         return $this->links()->sum('count_clicks');
     }
-}
+    //
+}// Redirections

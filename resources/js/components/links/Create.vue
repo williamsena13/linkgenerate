@@ -3,7 +3,9 @@
       <form >
         <div class="card">
             <div class="card-header bg-dark text-white">
+                <br>
                 <h5>Criação de Link</h5>
+                <hr>
             </div>
             <div class="card-body">
                 <strong>Link de Entrada</strong>
@@ -111,7 +113,9 @@ export default {
     },
     generate(){
         try {
-            document.getElementById('redirect_url').value = "https://www.meudominio.com/" + Math.random().toString(16).substring(4)
+            var getUrl = window.location;
+            var baseUrl = getUrl .protocol + "//" + getUrl.host + "/" //+ getUrl.pathname.split('/')[1];
+            document.getElementById('redirect_url').value = baseUrl + Math.random().toString(16).substring(4)
         } catch (error) {
             console.log("Erro no Generate", error)
         }

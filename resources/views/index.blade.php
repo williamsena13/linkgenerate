@@ -1,87 +1,94 @@
 @extends('layouts.app')
 
+@section('css')
+<style>
+    .sidebar {
+        position: fixed;
+        top: 51px;
+        bottom: 0;
+        left: 0;
+        z-index: 1000;
+        display: block;
+        padding: 20px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        /* Scrollable contents if viewport is shorter than content. */
+        background-color: #f5f5f5;
+        border-right: 1px solid #eee;
+    }
+
+
+</style>
+@endsection
+
 @section('content')
-<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark pmd-navbar pmd-z-depth">
+<div class="wrapper">
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3>Bootstrap Sidebar</h3>
+        </div>
 
-    <!-- Sidebar Toggle Button-->
-    <a href="javascript:void(0);" data-target="basicSidebar" data-placement="left" data-position="slidepush" is-open="true" is-open-width="1000" class="btn btn-sm pmd-btn-fab pmd-btn-flat pmd-ripple-effect pmd-sidebar-toggle"><i class="material-icons md-light">menu</i></a>
-    <a class="navbar-brand" href="#">Brand</a>
-
-    <!-- Navbar Right icon -->
-    <div class="pmd-navbar-right-icon ml-auto">
-      <a href="javascript:void(0);" class="btn btn-sm pmd-btn-fab pmd-btn-flat pmd-ripple-effect"><i class="material-icons pmd-sm md-light">search</i></a>
-    </div>
-
-</nav>
-<section id="pmd-main">
-    <!-- Left sidebar -->
-    <aside id="basicSidebar" class="pmd-sidebar bg-light pmd-z-depth" role="navigation">
-        <ul class="nav flex-column pmd-sidebar-nav">
-            <li class="nav-item pmd-user-info">
-                <a data-toggle="collapse" href="#collapseExample" class="nav-link btn-user media align-items-center">
-                    <img class="mr-3" src="https://pro.propeller.in/assets/images/avatar-icon-40x40.png" width="40" height="40" alt="avatar">
-                    <div class="media-body">
-                        User
-                    </div>
-                    <i class="material-icons md-light ml-2 pmd-sm">more_vert</i>
-                </a>
-                <ul class="collapse" id="collapseExample" data-parent="#basicSidebar">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="material-icons pmd-list-icon pmd-sm">delete</i>
-                            <span class="media-body">View Profile</span>
-                        </a>
+        <ul class="list-unstyled components">
+            <p>Dummy Heading</p>
+            <li class="active">
+                <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Home</a>
+                <ul class="collapse list-unstyled" id="homeSubmenu">
+                    <li>
+                        <a href="#">Home 1</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="material-icons pmd-list-icon pmd-sm">delete</i>
-                            <span class="media-body">Settings</span>
-                        </a>
+                    <li>
+                        <a href="#">Home 2</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="material-icons pmd-list-icon pmd-sm">delete</i>
-                            <span class="media-body">Logout</span>
-                        </a>
+                    <li>
+                        <a href="#">Home 3</a>
                     </li>
                 </ul>
             </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="#inbox">
-                    <i class="material-icons pmd-list-icon pmd-sm">inbox</i>
-                    <span class="media-body">Inbox</span>
-                </a>
+            <li>
+                <a href="#">About</a>
             </li>
-
-            <li class="nav-item">
-                <a class="nav-link active" href="#">
-                    <i class="material-icons pmd-list-icon pmd-sm">star</i>
-                    <span class="media-body">Stared</span>
-                </a>
+            <li>
+                <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>
+                <ul class="collapse list-unstyled" id="pageSubmenu">
+                    <li>
+                        <a href="#">Page 1</a>
+                    </li>
+                    <li>
+                        <a href="#">Page 2</a>
+                    </li>
+                    <li>
+                        <a href="#">Page 3</a>
+                    </li>
+                </ul>
             </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="material-icons pmd-list-icon pmd-sm">send</i>
-                    <span class="media-body">Sent Email</span>
-                </a>
+            <li>
+                <a href="#">Portfolio</a>
             </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="material-icons pmd-list-icon pmd-sm">drafts</i>
-                    <span class="media-body">Drafts</span>
-                </a>
+            <li>
+                <a href="#">Contact</a>
             </li>
         </ul>
-    </aside>
-    <div class="pmd-sidebar-overlay"></div>
-    <!-- Start Content -->
-    <div class="pmd-content custom-pmd-content" id="content">
-        <h2 class="headline">Sidebar Constructor</h2>
-        <p>This structure shows a permanent app bar with a floating action button. The app bar absorbs elements from the tablet and mobile bottom bars.</p>
-        <p style="margin-bottom:0;">An optional bottom bar can be added for additional functionality or action overflow. A side nav overlays all other structural elements. A right nav menu can be accessed temporarily or pinned for permanent display.<br><br></p>
-    </div>
-</section>
+    </nav>
+
+</div>
+<div id="content">
+    <div class="container-fluid">
+        <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+        <ul class="nav nav-sidebar">
+            <li class="active"><a href="#">Overview</a></li>
+            <li><a href="#">Reports</a></li>
+            <li><a href="#">Analytics</a></li>
+            <li><a href="#">Export</a></li>
+        </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <h1 class="page-header">Dashboard</h1>
+        ...
+
+        </div>
+        </div>
+        </div>
+</div>
 @endsection

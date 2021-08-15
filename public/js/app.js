@@ -2081,6 +2081,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2147,7 +2149,10 @@ __webpack_require__.r(__webpack_exports__);
     },
     generate: function generate() {
       try {
-        document.getElementById('redirect_url').value = "https://www.meudominio.com/" + Math.random().toString(16).substring(4);
+        var getUrl = window.location;
+        var baseUrl = getUrl.protocol + "//" + getUrl.host + "/"; //+ getUrl.pathname.split('/')[1];
+
+        document.getElementById('redirect_url').value = baseUrl + Math.random().toString(16).substring(4);
       } catch (error) {
         console.log("Erro no Generate", error);
       }
@@ -2586,7 +2591,8 @@ __webpack_require__.r(__webpack_exports__);
     redirects: function redirects() {
       var _this = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('http://localhost:8000/redirections').then(function (response) {
+      var url = 'http://localhost:8000/redirections';
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(url).then(function (response) {
         try {
           console.log('Estou aqui no sucesso do redirections->get()');
           console.log(response);
@@ -2598,7 +2604,7 @@ __webpack_require__.r(__webpack_exports__);
           console.log("Erro ao atriburi linsk", error);
         }
       })["catch"](function (error) {
-        console.log("Error do Redirection::get()", error);
+        console.log("Error", error);
       });
     },
     // getLinks()
@@ -2606,8 +2612,27 @@ __webpack_require__.r(__webpack_exports__);
       this.redirects = value;
     },
     editRedirect: function editRedirect(id) {
-      console.log('AQUI RAI');
-      console.log(id);
+      console.log('Edit do Redirect');
+      console.log('Parâmetro ID: ' + id); //
+
+      try {
+        var url = "http://localhost:8000/redirections/" + id + "/edit";
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(url).then(function (response) {
+          try {
+            console.log('Sucesso ao Editar');
+            console.log(response);
+            response.data;
+          } catch (error) {
+            console.log("Erro ao atriburi linsk", error);
+          }
+        })["catch"](function (error) {
+          console.log("Error", error);
+        });
+      } catch (error) {
+        console.log('Erro ao buscar', id);
+        console.log(error);
+      } //
+
     }
   },
   // methods
@@ -39351,7 +39376,11 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header bg-dark text-white" }, [
-      _c("h5", [_vm._v("Criação de Link")])
+      _c("br"),
+      _vm._v(" "),
+      _c("h5", [_vm._v("Criação de Link")]),
+      _vm._v(" "),
+      _c("hr")
     ])
   }
 ]

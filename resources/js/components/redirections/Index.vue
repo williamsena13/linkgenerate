@@ -69,7 +69,8 @@ export default {
   },
   methods: {
       redirects(){
-        axios.get('http://localhost:8000/redirections')
+        let url = 'http://localhost:8000/redirections'
+        axios.get(url)
             .then( response => {
                 try {
                     console.log( 'Estou aqui no sucesso do redirections->get()' )
@@ -82,15 +83,38 @@ export default {
 
             })
             .catch( error => {
-                console.log("Error do Redirection::get()", error)
+                console.log("Error", error)
             });
       },// getLinks()
       setRedirects( value ){
           this.redirects = value;
       },
       editRedirect( id ){
-          console.log('AQUI RAI')
-          console.log( id )
+          console.log('Edit do Redirect')
+          console.log('Parâmetro ID: ' + id )
+          //
+          try {
+            let url = "http://localhost:8000/redirections/"+id+"/edit";
+            axios.get(url)
+                .then( response => {
+                    try {
+                        console.log( 'Sucesso ao Editar' )
+                        console.log( response );
+                        response.data
+                    } catch (error) {
+                        console.log( "Erro ao atriburi linsk", error)
+                    }
+
+                })
+                .catch( error => {
+                    console.log("Error", error)
+                });
+          } catch( error ) {
+              console.log('Erro ao buscar' , id)
+
+              console.log( error );
+          }
+          //
       }
 
   }, // methods

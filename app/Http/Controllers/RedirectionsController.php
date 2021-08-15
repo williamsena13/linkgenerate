@@ -11,6 +11,9 @@ class RedirectionsController extends Controller
     {
         //
         $valor = Redirections::get();
+
+        $value = Redirections::findOrFail(1);
+
         return $valor;
         //
     }
@@ -65,9 +68,21 @@ class RedirectionsController extends Controller
         //
     }
 
-    public function edit(Redirections $redirections)
+    public function edit(Request $request)
     {
         //
+        if ( empty( $request->redirection ) ) {
+            return ['status' => 500, 'msg' => 'Parameter not found'];
+        }
+
+        try {
+            $redirection = Redirections::findOrFail($request->redirection);
+
+            return $redirection;
+
+        } catch (\Exception $e) {
+            return ['status' => 500, 'msg' => "Erro >> {$e->getMessage()} << when displaying Redirection {$request->redirection}" , 'e' => $e  ];
+        }
     }
 
     public function update(Request $request, Redirections $redirections)
