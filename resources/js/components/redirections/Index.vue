@@ -16,7 +16,7 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody v-for="redirec in this.getRedirec">
+                    <tbody v-for="redirec in this.getRedirects">
                         <tr>
                             <td width="70%">
                                 <h5><a @click="editRedirect( redirec.id )" data-toggle="collapse" data-target="#collapseExample" >{{ redirec.title }}&nbsp;<small>{{ redirec.create_at }}</small></a></h5>
@@ -63,19 +63,20 @@ export default {
   components: {
   },
   computed: {
-      getRedirec(){
+      getRedirects(){
           return this.redirects;
       },
 
   },
   methods: {
+      setRedirects( value ){
+          this.redirects = value;
+      },
       redirects(){
         let url = 'http://localhost:8000/redirections'
         axios.get(url)
             .then( response => {
                 try {
-                    console.log( 'Estou aqui no sucesso do redirections->get()' )
-                    console.log( response );
                     this.setRedirects(response.data)
                     document.getElementById('count_redirect').appendChild( document.createTextNode(response.data.length) );
                 } catch (error) {
@@ -87,9 +88,7 @@ export default {
                 console.log("Error", error)
             });
       },// getLinks()
-      setRedirects( value ){
-          this.redirects = value;
-      },
+
       editRedirect( id ){
           console.log('Edit do Redirect')
           console.log('Parâmetro ID: ' + id )

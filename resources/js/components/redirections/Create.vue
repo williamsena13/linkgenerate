@@ -1,6 +1,6 @@
 <template>
   <div>
-      <form >
+      <form>
         <div class="card">
             <div class="card-header bg-dark text-white">
                 <br>
@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     //*************************************************************
-    generate(){
+    generateUrl(){
         try {
             var getUrl = window.location;
             var baseUrl = getUrl .protocol + "//" + getUrl.host + "/" //+ getUrl.pathname.split('/')[1];
@@ -59,11 +59,21 @@ export default {
 
     //*************************************************************
     storeRedirects(){
-        console.log( 'addLink' );
+
         if( document.getElementById('itens_url').value < 1 ){
             alert("Adicione algum link de redirecionamento!");
+            document.getElementById('itens_url').select();
+            document.getElementById('itens_url').focus();
+            return false
+        }// if
+
+        if( document.getElementById('default_url').value < 1 ){
+            alert("Adicione algum link de redirecionamento!");
+            document.getElementById('default_url').select();
+            document.getElementById('default_url').focus();
             return false
         }
+
 
         var title = document.getElementById('title').value;
 
@@ -109,7 +119,7 @@ export default {
 
   },
   mounted() {
-      this.generate();
+      this.generateUrl();
   },
 };
 </script>
