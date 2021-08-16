@@ -4,19 +4,7 @@
             <tbody id="itens_url">
 
             </tbody>
-            <tfoot>
-                <tr>
-                    <th class="col-1" scope="row">
-                        Nº
-                    </th>
-                    <td class="col-6">
-                        URL de redirecionamento
-                    </td>
-                    <td class="col-4">
-                        Nº Clicks
-                    </td>
-                    <td class="col-1"></td>
-                </tr>
+            <tfoot>                
             </tfoot>
         </table>
         <vc-create-links></vc-create-links>
@@ -27,7 +15,7 @@
 </template>
 
 <script>
-
+    import Redirectionstens from './Index.vue';
     export default {
         name: "LinksItens",
         props: {},
@@ -120,6 +108,7 @@
                     let i = document.createElement("i" );
                     i.className = 'fa fa-edit'
                     button.appendChild( i )
+                    button.onclick = 
                     div.appendChild(button);
 
 
@@ -158,6 +147,9 @@
                 //parent.insertBefore(txt, parent.lastChild);
 
             },// addLink()
+            editLink(){
+                console.log('estou no edit link')
+            }
 
 
 

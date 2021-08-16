@@ -38,6 +38,7 @@
 
 <script>
 import Axios from 'axios';
+import LinksIndex from '../links/Index.vue';
 
 export default {
   name: "RedirectionsCreate",
@@ -56,6 +57,34 @@ export default {
         }
     },
 
+    populace( sRedirect_url, sTitle, sDefault_url, nStatus, itens ){
+        console.log( "Vou popular" )
+        try {
+            console.log('Parâmetros', sRedirect_url, sTitle, sDefault_url, nStatus )
+            document.getElementById('redirect_url').value = sRedirect_url
+            document.getElementById('title').value = sTitle
+            document.getElementById('url_default').value = sDefault_url
+
+            console.log( "os links", itens )
+
+            if ( itens ){
+                itens.forEach( item => {
+                    console.log( "Item", item)
+                    LinksIndex.methods.addLink(  
+                        item.input_url,
+                        item.limit_clicks,
+                        item.expires
+                    )
+                });
+            } else {
+               console.log( 'não tem links' ) 
+            }
+            //document.getElementById('').value = 
+        } catch (error) {
+            console.log("Erro ao popular Redirections", error)
+        }
+    },
+
 
     //*************************************************************
     storeRedirects(){
@@ -67,10 +96,10 @@ export default {
             return false
         }// if
 
-        if( document.getElementById('default_url').value < 1 ){
-            alert("Adicione algum link de redirecionamento!");
-            document.getElementById('default_url').select();
-            document.getElementById('default_url').focus();
+        if( document.getElementById('url_default').value < 1 ){
+            document.getElementById('url_default').select();
+            document.getElementById('url_default').focus();
+            alert("Adicione o link de padrão!");
             return false
         }
 
@@ -85,7 +114,9 @@ export default {
         }
 
         var redirect_url = document.getElementById('redirect_url').value;
+
         var default_url = document.getElementById('url_default').value;
+        console.log( url_default );
 
         let obj = {
             title : title,
@@ -94,15 +125,15 @@ export default {
         }
         console.log( 'vou postar o objeto')
         console.log( obj )
-
-        Axios.post("http://localhost:8000/redirections", obj)
+        let url = "/redirections";
+        Axios.post(url, obj)
 
         .then((response) => {
-            console.log( 'Sucesso do post do redirections')
+            alert('Link de Redirecionamento gerado com Sucesso!');
+            
             console.log(response )
             console.log(response.data )
             console.log(response.data.msg )
-            console.log(response.data.request_all)
 
         })
         .catch((error) => {

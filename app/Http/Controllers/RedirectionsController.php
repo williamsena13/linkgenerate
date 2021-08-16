@@ -79,6 +79,8 @@ class RedirectionsController extends Controller
         try {
             $redirection = Redirections::findOrFail($request->redirection);
 
+            $redirection->itens = $redirection->getLinks();
+
             return $redirection;
 
         } catch (\Exception $e) {

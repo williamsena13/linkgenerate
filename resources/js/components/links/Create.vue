@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-6">
                 <small>Nº de Clicks</small>
-                <input type="number" min="0" class="form-control" id="clicks" placeholder="Nº de Clicks">
+                <input type="number" min="0" max="9999" class="form-control" id="clicks" placeholder="Nº de Clicks">
             </div>
             <div class="col-6">
                 <small>Expira em</small>
@@ -36,7 +36,6 @@
         methods : {
             button(){
                 try {
-                    console.log( "BUTTON()" )
                     document.getElementById('btn_add_url').disabled = (document.getElementById('url_input').value.length < 1)
                 } catch (error) {
                     console.log('erro ao validar botão', error)
@@ -57,9 +56,12 @@
                     'expires' : expires
                 }
 
-                Axios.post("http://localhost:8000/links", link)
+                console.log( 'Vou postar esse link', link )
+                let url = "/links";
+                Axios.post(url, link)
                 .then((response) => {
                     console.log( 'sucesso nos links', response );
+                    
                     if ( response.msg ){
                         console.log("success", response.msg);
                     }

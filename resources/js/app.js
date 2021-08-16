@@ -4,6 +4,8 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+import '@fortawesome/fontawesome-free/css/all.css'
+
 require('./bootstrap');
 
 window.Vue = require('vue');

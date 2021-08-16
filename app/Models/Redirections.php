@@ -45,6 +45,7 @@ class Redirections extends Model
         )
         ->get();
     }
+    
 
     public function links()
     {

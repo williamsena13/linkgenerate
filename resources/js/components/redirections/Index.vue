@@ -54,7 +54,8 @@
 
 <script>
 import axios from "axios";
-
+import LinksIndex from './Index.vue';
+import LinksCreate from './Create.vue';
 export default {
   name: "RedirectsIndex",
   props: {
@@ -73,7 +74,7 @@ export default {
           this.redirects = value;
       },
       redirects(){
-        let url = 'http://localhost:8000/redirections'
+        let url = '/redirections' //'http://localhost:8000/redirections'
         axios.get(url)
             .then( response => {
                 try {
@@ -94,13 +95,15 @@ export default {
           console.log('Parâmetro ID: ' + id )
           //
           try {
-            let url = "http://localhost:8000/redirections/"+id+"/edit";
+            let url = "/redirections/"+id+"/edit";//"http://localhost:8000/redirections/"+id+"/edit";
             axios.get(url)
                 .then( response => {
                     try {
                         console.log( 'Sucesso ao Editar' )
                         console.log( response );
-                        response.data
+                        let object = response.data;
+                        LinksCreate.methods.populace( object.redirect_url, object.title, object.default_url , object.status, object.itens)
+                        
                     } catch (error) {
                         console.log( "Erro ao atriburi linsk", error)
                     }
