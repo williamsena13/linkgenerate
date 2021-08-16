@@ -54,7 +54,7 @@
 
 <script>
 import axios from "axios";
-import LinksIndex from './Index.vue';
+
 import LinksCreate from './Create.vue';
 export default {
   name: "RedirectsIndex",
@@ -102,8 +102,7 @@ export default {
                         console.log( 'Sucesso ao Editar' )
                         console.log( response );
                         let object = response.data;
-                        LinksCreate.methods.populace( object.redirect_url, object.title, object.default_url , object.status, object.itens)
-                        
+                        LinksCreate.methods.populace( object.redirect_url, object.title, object.default_url, object.itens)                        
                     } catch (error) {
                         console.log( "Erro ao atriburi linsk", error)
                     }

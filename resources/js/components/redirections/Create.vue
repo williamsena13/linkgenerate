@@ -57,10 +57,8 @@ export default {
         }
     },
 
-    populace( sRedirect_url, sTitle, sDefault_url, nStatus, itens ){
-        console.log( "Vou popular" )
+    populace( sRedirect_url, sTitle, sDefault_url,  itens ){
         try {
-            console.log('Parâmetros', sRedirect_url, sTitle, sDefault_url, nStatus )
             document.getElementById('redirect_url').value = sRedirect_url
             document.getElementById('title').value = sTitle
             document.getElementById('url_default').value = sDefault_url
@@ -68,17 +66,19 @@ export default {
             console.log( "os links", itens )
 
             if ( itens ){
-                itens.forEach( item => {
-                    console.log( "Item", item)
+                try {
+                    itens.forEach( item => {
                     LinksIndex.methods.addLink(  
-                        item.input_url,
-                        item.limit_clicks,
-                        item.expires
-                    )
-                });
-            } else {
-               console.log( 'não tem links' ) 
-            }
+                            item.input_url,
+                            item.limit_clicks,
+                            item.expires
+                        )
+                    });    
+                } catch (error) {
+                    console.log('Erro ao popular Links', error)   
+                }
+                
+            }// if()
             //document.getElementById('').value = 
         } catch (error) {
             console.log("Erro ao popular Redirections", error)

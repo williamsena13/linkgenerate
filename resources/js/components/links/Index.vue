@@ -24,8 +24,7 @@
         propos: {
             link : []
         },
-        methods: {
-
+        methods: {            
             //***************************************************
             addLink(
                 url_input,
@@ -104,11 +103,14 @@
 
                     let button = document.createElement("button" );
                     button.type = "button"
-                    button.className = "btn btn-outline-secondary"
+                    button.className = "btn btn-outline-secondary btn_edit"
                     let i = document.createElement("i" );
                     i.className = 'fa fa-edit'
+
+                    button.onclick = 'editLink()'
+                    
                     button.appendChild( i )
-                    button.onclick = 
+                    
                     div.appendChild(button);
 
 
@@ -154,6 +156,13 @@
 
 
         },
-        mounted() {}, //mounted()
+        mounted() {
+            $(".btn_edit").on('click', function(){
+                alert('vou editar')
+            })
+            window.btn_edit = function(){
+
+            }
+        }, //mounted()
     }
 </script>

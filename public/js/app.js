@@ -2483,11 +2483,12 @@ __webpack_require__.r(__webpack_exports__);
         div.role = "group";
         var button = document.createElement("button");
         button.type = "button";
-        button.className = "btn btn-outline-secondary";
+        button.className = "btn btn-outline-secondary btn_edit";
         var i = document.createElement("i");
         i.className = 'fa fa-edit';
+        button.onclick = 'editLink()';
         button.appendChild(i);
-        button.onclick = div.appendChild(button);
+        div.appendChild(button);
         var button1 = document.createElement("button");
         button1.type = "button";
         button1.className = "btn btn-outline-danger";
@@ -2518,7 +2519,13 @@ __webpack_require__.r(__webpack_exports__);
       console.log('estou no edit link');
     }
   },
-  mounted: function mounted() {} //mounted()
+  mounted: function mounted() {
+    $(".btn_edit").on('click', function () {
+      alert('vou editar');
+    });
+
+    window.btn_edit = function () {};
+  } //mounted()
 
 });
 
@@ -2593,24 +2600,23 @@ __webpack_require__.r(__webpack_exports__);
         console.log("Erro no Generate", error);
       }
     },
-    populace: function populace(sRedirect_url, sTitle, sDefault_url, nStatus, itens) {
-      console.log("Vou popular");
-
+    populace: function populace(sRedirect_url, sTitle, sDefault_url, itens) {
       try {
-        console.log('Parâmetros', sRedirect_url, sTitle, sDefault_url, nStatus);
         document.getElementById('redirect_url').value = sRedirect_url;
         document.getElementById('title').value = sTitle;
         document.getElementById('url_default').value = sDefault_url;
         console.log("os links", itens);
 
         if (itens) {
-          itens.forEach(function (item) {
-            console.log("Item", item);
-            _links_Index_vue__WEBPACK_IMPORTED_MODULE_1__["default"].methods.addLink(item.input_url, item.limit_clicks, item.expires);
-          });
-        } else {
-          console.log('não tem links');
-        } //document.getElementById('').value = 
+          try {
+            itens.forEach(function (item) {
+              _links_Index_vue__WEBPACK_IMPORTED_MODULE_1__["default"].methods.addLink(item.input_url, item.limit_clicks, item.expires);
+            });
+          } catch (error) {
+            console.log('Erro ao popular Links', error);
+          }
+        } // if()
+        //document.getElementById('').value = 
 
       } catch (error) {
         console.log("Erro ao popular Redirections", error);
@@ -2684,8 +2690,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Index_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Index.vue */ "./resources/js/components/redirections/Index.vue");
-/* harmony import */ var _Create_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Create.vue */ "./resources/js/components/redirections/Create.vue");
+/* harmony import */ var _Create_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Create.vue */ "./resources/js/components/redirections/Create.vue");
 //
 //
 //
@@ -2740,7 +2745,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2788,7 +2792,7 @@ __webpack_require__.r(__webpack_exports__);
             console.log('Sucesso ao Editar');
             console.log(response);
             var object = response.data;
-            _Create_vue__WEBPACK_IMPORTED_MODULE_2__["default"].methods.populace(object.redirect_url, object.title, object.default_url, object.status, object.itens);
+            _Create_vue__WEBPACK_IMPORTED_MODULE_1__["default"].methods.populace(object.redirect_url, object.title, object.default_url, object.itens);
           } catch (error) {
             console.log("Erro ao atriburi linsk", error);
           }
