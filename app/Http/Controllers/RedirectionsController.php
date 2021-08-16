@@ -4,15 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Redirections;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RedirectionsController extends Controller
 {
     public function index()
     {
         //
-        $valor = Redirections::get();
 
-        $value = Redirections::findOrFail(1);
+        $valor = Redirections::getIndex();
+
 
         return $valor;
         //

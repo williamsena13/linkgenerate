@@ -1,129 +1,92 @@
 <template>
-  <div>
-      <form >
-        <div class="card">
-            <div class="card-header bg-dark text-white">
-                <br>
-                <h5>Criação de Link</h5>
-                <hr>
+    <div class="edit-links">
+        <small>Insira a URL de Redirecionamento</small>
+        <input type="text" @change="button()" class="form-control" id="url_input" placeholder="Insira a URL original">
+        <hr>
+        <div class="row">
+            <div class="col-6">
+                <small>Nº de Clicks</small>
+                <input type="number" min="0" class="form-control" id="clicks" placeholder="Nº de Clicks">
             </div>
-            <div class="card-body">
-                <strong>Link de Entrada</strong>
-                <input type="text" class="form-control" placeholder="Link de Entrada" id="redirect_url" disabled>
-                <br>
-
-                <strong>Título do Link</strong>
-                <input type="text" class="form-control" id="title" name="title" placeholder="Digite um Link">
-                <br>
-                <div class="form-group">
-                    <h5 class="text-primary">URL original</h5>
-                    <p class="text-gray">Você poderá inserir uma ou várias URL's, faça como desejar. Lembre-se de inserir a quantidade de cliques junto à URL.</p>
-                    <vc-grid-links></vc-grid-links>
-                </div>
-                <hr>
-                <h5 class="text-primary">URL Default</h5>
-                <p class="text-gray">Essa URL será associada ao redirecionamento apenas quando todas as outrsa chegarem ao limite de cliques. Ela será a uma url fix sem limitações.</p>
-                <input type="url" class="form-control" id="url_default" placeholder="Insira a URL Default">
-            </div>
-            <div class="card-footer">
-                <button type="button" class="btn btn-primary btn-block pull-right" @click="storeRedirects()">
-                    <i class="fa fa-plus"></i> Salvar Redirecionamento
-                </button>
+            <div class="col-6">
+                <small>Expira em</small>
+                <input type="date" min="0" class="form-control" id="expires" placeholder="Expira em">
             </div>
         </div>
-    </form>
-  </div>
+
+        <hr>
+        <button type="button" class="btn btn-outline-primary" id="btn_add_url" @click="post()" disabled>
+            <i class="fa fa-plus"></i>
+            Adicionar mais URL
+        </button>
+    </div>
 </template>
 
-
 <script>
-import axios from "axios";
-import Axios from 'axios';
+    import LinksItens from './Index.vue';
+    import Axios from 'axios';
+    export default {
+        name : "LinksCreate",
+        propos : {
 
-export default {
-  name: "LinksCreate",
-  propos: {
-    link: [],
-    validation: [],
-  },
-  methods: {
-    //*************************************************************
-    LinkStore() {
-      axios
-        .post("http://localhost:8000/links", this.link)
-        .then((response) => {
-          this.$router.push({
-            name: "links",
-          });
-          console.log(response.data.data);
-        })
-        .catch((error) => {
-          this.validation = error.response.data.data;
-        });
-    },
-    //*************************************************************
+        },
+        components : {
 
-    //*************************************************************
-    storeRedirects(){
-        console.log( 'addLink' )
-        if( document.getElementById('itens_url').value < 1 ){
-            alert("Adicione algum link de redirecionamento!");
-            return false
+        },
+        methods : {
+            button(){
+                try {
+                    console.log( "BUTTON()" )
+                    document.getElementById('btn_add_url').disabled = (document.getElementById('url_input').value.length < 1)
+                } catch (error) {
+                    console.log('erro ao validar botão', error)
+                }
+            },
+            post(){
+
+                const OBJ_THIS = this;
+                let input_url = document.getElementById('url_input').value;
+                let count = document.getElementById('clicks').value.slice(-3);
+                let redirect_url = document.getElementById('redirect_url').value;
+                let expires = document.getElementById('expires').value;
+
+                var link = {
+                    'url' : redirect_url,
+                    'input_url' : input_url,
+                    'limit_clicks' : count,
+                    'expires' : expires
+                }
+
+                Axios.post("http://localhost:8000/links", link)
+                .then((response) => {
+                    console.log( 'sucesso nos links', response );
+                    if ( response.msg ){
+                        console.log("success", response.msg);
+                    }
+                    console.log(response)
+
+                    try {
+                        let url_input = document.getElementById('url_input').value;
+                        let count = document.getElementById('clicks').value.slice(-3);
+                        let extpired = document.getElementById('expires').value;
+                        LinksItens.methods.addLink( url_input, count, extpired );
+                        //this.addLink();
+                    } catch (error) {
+                        console.log("Erro ao popular grid", error);
+                    }
+
+                })
+                .catch((error) => {
+                    //this.validation = error.response.data.data;z
+                    console.log( "Erro ao postar Link", error )
+                });
+
+                LinksItens.props.postLink( link )
+            }
+        },
+        mounted(){
+
         }
 
-        var title = document.getElementById('title').value;
-
-        if ( title.length < 1 ) {
-            alert('Favor inserir um titulo');
-            document.getElementById('title').focus()
-            document.getElementById('title').select();
-            return false;
-        }
-
-        var redirect_url = document.getElementById('redirect_url').value;
-        var default_url = document.getElementById('url_default').value;
-
-        let obj = {
-            title : title,
-            redirect_url : redirect_url,
-            default_url : default_url
-        }
-        console.log( 'vou postar o objeto')
-        console.log( obj )
-
-        Axios.post("http://localhost:8000/redirections", obj)
-
-        .then((response) => {
-            console.log( 'Sucesso do post do redirections')
-            console.log(response )
-          console.log(response.data )
-          console.log(response.data.msg )
-          console.log(response.data.request_all)
-
-        })
-        .catch((error) => {
-            console.log("ERRO AO POSTAR", error)
-          this.validation = error.response.data.data;
-        });
-
-
-
-
-
-    },
-    generate(){
-        try {
-            var getUrl = window.location;
-            var baseUrl = getUrl .protocol + "//" + getUrl.host + "/" //+ getUrl.pathname.split('/')[1];
-            document.getElementById('redirect_url').value = baseUrl + Math.random().toString(16).substring(4)
-        } catch (error) {
-            console.log("Erro no Generate", error)
-        }
     }
-
-  },
-  mounted() {
-      this.generate();
-  },
-};
 </script>

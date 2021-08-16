@@ -23,6 +23,7 @@
                     </div>
                     <div class="modal-body">
                         <vc-index-redirections></vc-index-redirections>
+                        <hr>
                     </div>
                 </div>
             </div>

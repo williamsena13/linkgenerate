@@ -24,8 +24,10 @@
                             </td>
                             <td width="30%">
                                 <hr>
-                                <h4>10/500</h4>
-                            </td>
+                                <h5>
+                                    {{ redirec.count_clicks }} / {{ redirec.limit_clicks }}
+                                </h5>
+                             </td>
                         </tr>
                     </tbody>
                 </table>
@@ -38,8 +40,7 @@
 
                 <div class="collapse" id="collapseExample">
                     <div class="row">
-
-                        <vc-create-links></vc-create-links>
+                        <vc-create-redirections></vc-create-redirections>
                     </div>
                 </div>
 

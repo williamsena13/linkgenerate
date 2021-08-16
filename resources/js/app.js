@@ -23,13 +23,13 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 Vue.component('vc-home', require('./components/Home.vue').default);
 
 Vue.component('vc-index-redirections', require('./components/redirections/Index.vue').default);
+Vue.component('vc-create-redirections', require('./components/redirections/Create.vue').default);
 
 
 Vue.component('vc-modal-links', require('./components/links/Modal.vue').default);
 Vue.component('vc-index-links', require('./components/links/Index.vue').default);
 Vue.component('vc-create-links', require('./components/links/Create.vue').default);
 
-Vue.component('vc-grid-links', require('./components/links/GridItens.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

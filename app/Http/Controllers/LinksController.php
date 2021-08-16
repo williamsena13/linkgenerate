@@ -35,7 +35,7 @@ class LinksController extends Controller
 
             if ( $link->save() ){
 
-                return [ 'status' => 200, 'msg' => "link sotre", 'data' => $link];
+                return [ 'status' => 200, 'msg' => "link saved successfully!", 'data' => $link];
             }
         } catch (\Exception $e) {
             dd( 'status 500', "Erro >> {$e->getMessage()} << ao salvar link" , $e  ,$request->all());
