@@ -1,6 +1,7 @@
 <template>
   <div>
       <form>
+        <!--
         <div class="card">
             <div class="card-header bg-dark text-white">
                 <br>
@@ -30,6 +31,38 @@
                     <i class="fa fa-plus"></i> Salvar Redirecionamento
                 </button>
             </div>
+        </div>
+        -->
+        <div class="offcanvas offcanvas-end" tabindex="2" id="offcanvasRight">
+            <div class="offcanvas-header bg-dark text-white">                        
+                <h5>Criação de Link</h5>
+                <hr>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <strong>Link de Entrada</strong>
+                <input type="text" class="form-control" placeholder="Link de Entrada" id="redirect_url" disabled>
+                <br>
+
+                <strong>Título do Link</strong>
+                <input type="text" class="form-control" id="title" name="title" placeholder="Digite um Link">
+                <br>
+                <div class="form-group">
+                    <h5 class="text-primary">URL original</h5>
+                    <p class="text-gray">Você poderá inserir uma ou várias URL's, faça como desejar. Lembre-se de inserir a quantidade de cliques junto à URL.</p>
+                    <vc-index-links></vc-index-links>
+                </div>
+                <hr>
+                <h5 class="text-primary">URL Default</h5>
+                <p class="text-gray">Essa URL será associada ao redirecionamento apenas quando todas as outrsa chegarem ao limite de cliques. Ela será a uma url fix sem limitações.</p>
+                <input type="url" class="form-control" id="url_default" placeholder="Insira a URL Default">
+
+                <hr><br>
+                <button type="button" class="btn btn-primary btn-block pull-right" @click="storeRedirects()">
+                    <i class="fa fa-plus"></i> Salvar Redirecionamento
+                </button>
+            </div>
+            
         </div>
     </form>
   </div>

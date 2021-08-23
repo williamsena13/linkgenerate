@@ -34,17 +34,12 @@
             </div>
             <div class="card col-md-5">
 
-                <button type="button" align="right" class="btn btn-outline-dark" data-toggle="collapse" data-target="#collapseExample">
+                <button type="button" align="right" class="btn btn-outline-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
                     Criar Link
                 </button>
 
-                <div class="collapse" id="collapseExample">
-                    <div class="row">
-                        <vc-create-redirections></vc-create-redirections>
-                    </div>
-                </div>
 
-
+                <vc-create-redirections></vc-create-redirections>                
             </div>
 
       </div>

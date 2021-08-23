@@ -1,84 +1,101 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+        <!-- CSRF Token -->
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+        <!-- Scripts -->
+        <script src="{{ asset('js/app.js') }}" defer></script>
 
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+        <!-- Fonts -->
+        <link rel="dns-prefetch" href="//fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
-    <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-</head>
-<body>
-    <div id="app">
-        <nav class="navbar navbar-dark bg-dark navbar-expand-lg navbar-light bg-light">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
+        <!-- Styles -->
+        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    </head>
+    <body>
+                    
+        <div class="d-flex bd-highlight">
+        
+          <div class="d-flex flex-column flex-shrink-0 bg-light" style="width: 4.5rem;">
+            <a href="/" class="d-block p-3 link-dark text-decoration-none" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
+                
+              <span class="visually-hidden">Icon-only</span>
+            </a>
+
+            <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
+              
+              <li>
+                <a class="nav-link py-3 border-bottom active" data-bs-toggle="modal" data-bs-target="#modal" href="#">
+                    <img class="bi" width="40" height="32" src="img/gift-box.png"/>
                 </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav mr-auto">
-                        @Auth
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('home') }}">{{ __('Home') }}</a>
-                        </li>
-                        @endauth
-                    </ul>
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ml-auto">
-                        <!-- Authentication Links -->
-                        @guest
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                            </li>
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
-                        @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
-                                </a>
-
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
-                    </ul>
-                </div>
+              </li>
+              <li>
+                <a href="#" class="nav-link py-3 border-bottom disabled" >
+                    <img class="bi" width="40" height="32" src="img/formatura.png"/>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="nav-link py-3 border-bottom disabled" >
+                    <img class="bi" width="40" height="32" src="img/trophy.png"/>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="nav-link py-3 border-bottom disabled" >
+                    <img class="bi" width="40" height="32" src="img/user.png"/>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="nav-link py-3 border-bottom disabled" >
+                    <img class="bi" width="40" height="32" src="img/chat.png"/>
+                </a>
+              </li>
+            </ul>
+            <div class="dropdown border-top">
+              <a href="#" class="d-flex align-items-center justify-content-center p-3 link-dark text-decoration-none dropdown-toggle" id="dropdownUser3" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="https://avatars.githubusercontent.com/u/17604081?v=4" alt="mdo" width="24" height="24" class="rounded-circle">
+              </a>
+              <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser3">
+                <li>
+                    <a class="dropdown-item" href="https://github.com/williamsena13">Github</a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item" href="https://www.linkedin.com/in/william-basseto-sena-b38556b3/">LinkedIn</a>
+                </li>
+                
+                
+              </ul>
             </div>
-        </nav>
+          </div>
+          <div class="container">
+              
+          </div>        
+    </div>    
 
-        <main class="py-4">
-            @yield('content')
-        </main>
-    </div>
+    <div class="modal fade" id="modal"  role="dialog">
+        <div class="modal-dialog modal-xl">
+
+          <div class="modal-content">
+            <div class="modal-header">
+                
+                <h2 class="modal-title">
+                    Links de Redirecionamento<br>                    
+                </h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <small class="text-gray-500">Crie seus links de redirecionamento em poucos passos</small>
+                
+                @yield('content')
+            </div>            
+          </div>
+        </div>
+      </div>      
 </body>
-</html>
