@@ -38,8 +38,33 @@
                     Criar Link
                 </button>
 
+                <hr>
 
-                <vc-create-redirections></vc-create-redirections>                
+                <div clas="card">
+                    <div class="card-title">
+                        Criar um Link
+                    </div>
+                    <div class="card-body">
+                        <vc-create-redirections></vc-create-redirections>
+                    </div>
+                </div>
+
+
+
+
+
+
+            </div>
+
+
+            <div class="offcanvas offcanvas-end" tabindex="2" id="offcanvasRight">
+                <div class="offcanvas-header bg-dark text-white">
+                    <h5>Criação de Link</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <vc-create-redirections></vc-create-redirections>
+                </div>
             </div>
 
       </div>
@@ -97,7 +122,7 @@ export default {
                         console.log( 'Sucesso ao Editar' )
                         console.log( response );
                         let object = response.data;
-                        LinksCreate.methods.populace( object.redirect_url, object.title, object.default_url, object.itens)                        
+                        LinksCreate.methods.populace( object.redirect_url, object.title, object.default_url, object.itens)
                     } catch (error) {
                         console.log( "Erro ao atriburi linsk", error)
                     }

@@ -3426,6 +3426,7 @@ module.exports = __webpack_require__(/*! ./lib/axios */ "./node_modules/axios/li
 
 var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/utils.js");
 var settle = __webpack_require__(/*! ./../core/settle */ "./node_modules/axios/lib/core/settle.js");
+var cookies = __webpack_require__(/*! ./../helpers/cookies */ "./node_modules/axios/lib/helpers/cookies.js");
 var buildURL = __webpack_require__(/*! ./../helpers/buildURL */ "./node_modules/axios/lib/helpers/buildURL.js");
 var buildFullPath = __webpack_require__(/*! ../core/buildFullPath */ "./node_modules/axios/lib/core/buildFullPath.js");
 var parseHeaders = __webpack_require__(/*! ./../helpers/parseHeaders */ "./node_modules/axios/lib/helpers/parseHeaders.js");
@@ -3446,7 +3447,7 @@ module.exports = function xhrAdapter(config) {
     // HTTP basic authentication
     if (config.auth) {
       var username = config.auth.username || '';
-      var password = config.auth.password || '';
+      var password = config.auth.password ? unescape(encodeURIComponent(config.auth.password)) : '';
       requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
     }
 
@@ -3527,8 +3528,6 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(/*! ./../helpers/cookies */ "./node_modules/axios/lib/helpers/cookies.js");
-
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(fullPath)) && config.xsrfCookieName ?
         cookies.read(config.xsrfCookieName) :
@@ -3594,7 +3593,7 @@ module.exports = function xhrAdapter(config) {
       });
     }
 
-    if (requestData === undefined) {
+    if (!requestData) {
       requestData = null;
     }
 
@@ -3662,6 +3661,9 @@ axios.all = function all(promises) {
   return Promise.all(promises);
 };
 axios.spread = __webpack_require__(/*! ./helpers/spread */ "./node_modules/axios/lib/helpers/spread.js");
+
+// Expose isAxiosError
+axios.isAxiosError = __webpack_require__(/*! ./helpers/isAxiosError */ "./node_modules/axios/lib/helpers/isAxiosError.js");
 
 module.exports = axios;
 
@@ -3871,9 +3873,10 @@ Axios.prototype.getUri = function getUri(config) {
 utils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData(method) {
   /*eslint func-names:0*/
   Axios.prototype[method] = function(url, config) {
-    return this.request(utils.merge(config || {}, {
+    return this.request(mergeConfig(config || {}, {
       method: method,
-      url: url
+      url: url,
+      data: (config || {}).data
     }));
   };
 });
@@ -3881,7 +3884,7 @@ utils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData
 utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
   /*eslint func-names:0*/
   Axios.prototype[method] = function(url, data, config) {
-    return this.request(utils.merge(config || {}, {
+    return this.request(mergeConfig(config || {}, {
       method: method,
       url: url,
       data: data
@@ -4141,7 +4144,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
   error.response = response;
   error.isAxiosError = true;
 
-  error.toJSON = function() {
+  error.toJSON = function toJSON() {
     return {
       // Standard
       message: this.message,
@@ -4190,59 +4193,73 @@ module.exports = function mergeConfig(config1, config2) {
   config2 = config2 || {};
   var config = {};
 
-  var valueFromConfig2Keys = ['url', 'method', 'params', 'data'];
-  var mergeDeepPropertiesKeys = ['headers', 'auth', 'proxy'];
+  var valueFromConfig2Keys = ['url', 'method', 'data'];
+  var mergeDeepPropertiesKeys = ['headers', 'auth', 'proxy', 'params'];
   var defaultToConfig2Keys = [
-    'baseURL', 'url', 'transformRequest', 'transformResponse', 'paramsSerializer',
-    'timeout', 'withCredentials', 'adapter', 'responseType', 'xsrfCookieName',
-    'xsrfHeaderName', 'onUploadProgress', 'onDownloadProgress',
-    'maxContentLength', 'validateStatus', 'maxRedirects', 'httpAgent',
-    'httpsAgent', 'cancelToken', 'socketPath'
+    'baseURL', 'transformRequest', 'transformResponse', 'paramsSerializer',
+    'timeout', 'timeoutMessage', 'withCredentials', 'adapter', 'responseType', 'xsrfCookieName',
+    'xsrfHeaderName', 'onUploadProgress', 'onDownloadProgress', 'decompress',
+    'maxContentLength', 'maxBodyLength', 'maxRedirects', 'transport', 'httpAgent',
+    'httpsAgent', 'cancelToken', 'socketPath', 'responseEncoding'
   ];
+  var directMergeKeys = ['validateStatus'];
+
+  function getMergedValue(target, source) {
+    if (utils.isPlainObject(target) && utils.isPlainObject(source)) {
+      return utils.merge(target, source);
+    } else if (utils.isPlainObject(source)) {
+      return utils.merge({}, source);
+    } else if (utils.isArray(source)) {
+      return source.slice();
+    }
+    return source;
+  }
+
+  function mergeDeepProperties(prop) {
+    if (!utils.isUndefined(config2[prop])) {
+      config[prop] = getMergedValue(config1[prop], config2[prop]);
+    } else if (!utils.isUndefined(config1[prop])) {
+      config[prop] = getMergedValue(undefined, config1[prop]);
+    }
+  }
 
   utils.forEach(valueFromConfig2Keys, function valueFromConfig2(prop) {
-    if (typeof config2[prop] !== 'undefined') {
-      config[prop] = config2[prop];
+    if (!utils.isUndefined(config2[prop])) {
+      config[prop] = getMergedValue(undefined, config2[prop]);
     }
   });
 
-  utils.forEach(mergeDeepPropertiesKeys, function mergeDeepProperties(prop) {
-    if (utils.isObject(config2[prop])) {
-      config[prop] = utils.deepMerge(config1[prop], config2[prop]);
-    } else if (typeof config2[prop] !== 'undefined') {
-      config[prop] = config2[prop];
-    } else if (utils.isObject(config1[prop])) {
-      config[prop] = utils.deepMerge(config1[prop]);
-    } else if (typeof config1[prop] !== 'undefined') {
-      config[prop] = config1[prop];
-    }
-  });
+  utils.forEach(mergeDeepPropertiesKeys, mergeDeepProperties);
 
   utils.forEach(defaultToConfig2Keys, function defaultToConfig2(prop) {
-    if (typeof config2[prop] !== 'undefined') {
-      config[prop] = config2[prop];
-    } else if (typeof config1[prop] !== 'undefined') {
-      config[prop] = config1[prop];
+    if (!utils.isUndefined(config2[prop])) {
+      config[prop] = getMergedValue(undefined, config2[prop]);
+    } else if (!utils.isUndefined(config1[prop])) {
+      config[prop] = getMergedValue(undefined, config1[prop]);
+    }
+  });
+
+  utils.forEach(directMergeKeys, function merge(prop) {
+    if (prop in config2) {
+      config[prop] = getMergedValue(config1[prop], config2[prop]);
+    } else if (prop in config1) {
+      config[prop] = getMergedValue(undefined, config1[prop]);
     }
   });
 
   var axiosKeys = valueFromConfig2Keys
     .concat(mergeDeepPropertiesKeys)
-    .concat(defaultToConfig2Keys);
+    .concat(defaultToConfig2Keys)
+    .concat(directMergeKeys);
 
   var otherKeys = Object
-    .keys(config2)
+    .keys(config1)
+    .concat(Object.keys(config2))
     .filter(function filterAxiosKeys(key) {
       return axiosKeys.indexOf(key) === -1;
     });
 
-  utils.forEach(otherKeys, function otherKeysDefaultToConfig2(prop) {
-    if (typeof config2[prop] !== 'undefined') {
-      config[prop] = config2[prop];
-    } else if (typeof config1[prop] !== 'undefined') {
-      config[prop] = config1[prop];
-    }
-  });
+  utils.forEach(otherKeys, mergeDeepProperties);
 
   return config;
 };
@@ -4271,7 +4288,7 @@ var createError = __webpack_require__(/*! ./createError */ "./node_modules/axios
  */
 module.exports = function settle(resolve, reject, response) {
   var validateStatus = response.config.validateStatus;
-  if (!validateStatus || validateStatus(response.status)) {
+  if (!response.status || !validateStatus || validateStatus(response.status)) {
     resolve(response);
   } else {
     reject(createError(
@@ -4403,6 +4420,7 @@ var defaults = {
   xsrfHeaderName: 'X-XSRF-TOKEN',
 
   maxContentLength: -1,
+  maxBodyLength: -1,
 
   validateStatus: function validateStatus(status) {
     return status >= 200 && status < 300;
@@ -4466,7 +4484,6 @@ var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/util
 
 function encode(val) {
   return encodeURIComponent(val).
-    replace(/%40/gi, '@').
     replace(/%3A/gi, ':').
     replace(/%24/g, '$').
     replace(/%2C/gi, ',').
@@ -4647,6 +4664,29 @@ module.exports = function isAbsoluteURL(url) {
   // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
   // by any combination of letters, digits, plus, period, or hyphen.
   return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/helpers/isAxiosError.js":
+/*!********************************************************!*\
+  !*** ./node_modules/axios/lib/helpers/isAxiosError.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Determines whether the payload is an error thrown by Axios
+ *
+ * @param {*} payload The value to test
+ * @returns {boolean} True if the payload is an error thrown by Axios, otherwise false
+ */
+module.exports = function isAxiosError(payload) {
+  return (typeof payload === 'object') && (payload.isAxiosError === true);
 };
 
 
@@ -4976,6 +5016,21 @@ function isObject(val) {
 }
 
 /**
+ * Determine if a value is a plain Object
+ *
+ * @param {Object} val The value to test
+ * @return {boolean} True if value is a plain Object, otherwise false
+ */
+function isPlainObject(val) {
+  if (toString.call(val) !== '[object Object]') {
+    return false;
+  }
+
+  var prototype = Object.getPrototypeOf(val);
+  return prototype === null || prototype === Object.prototype;
+}
+
+/**
  * Determine if a value is a Date
  *
  * @param {Object} val The value to test
@@ -5131,34 +5186,12 @@ function forEach(obj, fn) {
 function merge(/* obj1, obj2, obj3, ... */) {
   var result = {};
   function assignValue(val, key) {
-    if (typeof result[key] === 'object' && typeof val === 'object') {
+    if (isPlainObject(result[key]) && isPlainObject(val)) {
       result[key] = merge(result[key], val);
-    } else {
-      result[key] = val;
-    }
-  }
-
-  for (var i = 0, l = arguments.length; i < l; i++) {
-    forEach(arguments[i], assignValue);
-  }
-  return result;
-}
-
-/**
- * Function equal to merge with the difference being that no reference
- * to original objects is kept.
- *
- * @see merge
- * @param {Object} obj1 Object to merge
- * @returns {Object} Result of all merge properties
- */
-function deepMerge(/* obj1, obj2, obj3, ... */) {
-  var result = {};
-  function assignValue(val, key) {
-    if (typeof result[key] === 'object' && typeof val === 'object') {
-      result[key] = deepMerge(result[key], val);
-    } else if (typeof val === 'object') {
-      result[key] = deepMerge({}, val);
+    } else if (isPlainObject(val)) {
+      result[key] = merge({}, val);
+    } else if (isArray(val)) {
+      result[key] = val.slice();
     } else {
       result[key] = val;
     }
@@ -5189,6 +5222,19 @@ function extend(a, b, thisArg) {
   return a;
 }
 
+/**
+ * Remove byte order marker. This catches EF BB BF (the UTF-8 BOM)
+ *
+ * @param {string} content with BOM
+ * @return {string} content value without BOM
+ */
+function stripBOM(content) {
+  if (content.charCodeAt(0) === 0xFEFF) {
+    content = content.slice(1);
+  }
+  return content;
+}
+
 module.exports = {
   isArray: isArray,
   isArrayBuffer: isArrayBuffer,
@@ -5198,6 +5244,7 @@ module.exports = {
   isString: isString,
   isNumber: isNumber,
   isObject: isObject,
+  isPlainObject: isPlainObject,
   isUndefined: isUndefined,
   isDate: isDate,
   isFile: isFile,
@@ -5208,9 +5255,9 @@ module.exports = {
   isStandardBrowserEnv: isStandardBrowserEnv,
   forEach: forEach,
   merge: merge,
-  deepMerge: deepMerge,
   extend: extend,
-  trim: trim
+  trim: trim,
+  stripBOM: stripBOM
 };
 
 
@@ -5319,6 +5366,79 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -5692,50 +5812,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -5771,7 +5847,7 @@ __webpack_require__.r(__webpack_exports__);
             console.log('Erro ao popular Links', error);
           }
         } // if()
-        //document.getElementById('').value = 
+        //document.getElementById('').value =
 
       } catch (error) {
         console.log("Erro ao popular Redirections", error);
@@ -5846,6 +5922,31 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _Create_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Create.vue */ "./resources/js/components/redirections/Create.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -11026,7 +11127,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.text-gray-500 { color: #a0aec0;\n}\n", ""]);
+exports.push([module.i, "\n.text-gray-500 {\n  color: #a0aec0;\n}\n", ""]);
 
 // exports
 
@@ -43140,7 +43241,7 @@ var render = function() {
           _c("div", { staticClass: "card" }, [
             _c("div", { staticClass: "card-header" }, [
               _c("h3", [
-                _vm._v("Bem vindo "),
+                _vm._v("\n            Bem vindo\n            "),
                 _c("small", [_c("strong", [_vm._v(_vm._s(_vm.user.name))])])
               ])
             ]),
@@ -43222,7 +43323,9 @@ var staticRenderFns = [
       _vm._v(" "),
       _c("ul", [
         _c("li", { staticClass: "text-info" }, [
-          _vm._v("Backend utilizando o framework Laravel ^7.0")
+          _vm._v(
+            "\n              Backend utilizando o framework Laravel ^7.0\n            "
+          )
         ]),
         _vm._v(" "),
         _c(
@@ -43231,24 +43334,34 @@ var staticRenderFns = [
             staticClass: "text-danger",
             staticStyle: { "text-decoration": "line-through" }
           },
-          [_vm._v("Backend utilizando o framework Lumen ^7.0.")]
+          [
+            _vm._v(
+              "\n              Backend utilizando o framework Lumen ^7.0.\n            "
+            )
+          ]
         ),
         _vm._v(" "),
         _c("li", { staticClass: "text-success" }, [
-          _vm._v("Frontend utilizando o framework Vue.js ^2.6")
-        ]),
-        _vm._v(" "),
-        _c("li", { staticClass: "text-success" }, [
-          _vm._v("Utilizar como banco de dados MySQL ^8.0")
-        ]),
-        _vm._v(" "),
-        _c("li", { staticClass: "text-success" }, [
-          _vm._v("Realizar o versionamento do projeto utilizando Git.")
+          _vm._v(
+            "\n              Frontend utilizando o framework Vue.js ^2.6\n            "
+          )
         ]),
         _vm._v(" "),
         _c("li", { staticClass: "text-success" }, [
           _vm._v(
-            "Tentar seguir ao máximo o protótipo fornecido no final deste documento"
+            "\n              Utilizar como banco de dados MySQL ^8.0\n            "
+          )
+        ]),
+        _vm._v(" "),
+        _c("li", { staticClass: "text-success" }, [
+          _vm._v(
+            "\n              Realizar o versionamento do projeto utilizando Git.\n            "
+          )
+        ]),
+        _vm._v(" "),
+        _c("li", { staticClass: "text-success" }, [
+          _vm._v(
+            "\n              Tentar seguir ao máximo o protótipo fornecido no final deste\n              documento\n            "
           )
         ])
       ]),
@@ -43258,37 +43371,37 @@ var staticRenderFns = [
       _c("ul", [
         _c("li", [
           _vm._v(
-            "O usuário deverá ser capaz de criar um novo “link de redirecionamento” podendo escolher seu nome e para o mesmo será gerado um “link de entrada” (Ex: “redirect.gdigital.com.br/abc123”). O mesmo poderá adicionar N links de saída, sendo que que para cada link de saída o mesmo deve configurar uma quantidade maxima de redirecionamento (Ex: “google.com.br”, 100; “facebook.com”, 200; “whatsapp.com”, 100) e o mesmo também deverá cadastrar um link default  (Ex: “evernote.com”) e opcionalmente uma data limite de funcionamento do link."
+            "\n              O usuário deverá ser capaz de criar um novo “link de\n              redirecionamento” podendo escolher seu nome e para o mesmo será\n              gerado um “link de entrada” (Ex:\n              “redirect.gdigital.com.br/abc123”). O mesmo poderá adicionar N\n              links de saída, sendo que que para cada link de saída o mesmo\n              deve configurar uma quantidade maxima de redirecionamento (Ex:\n              “google.com.br”, 100; “facebook.com”, 200; “whatsapp.com”, 100)\n              e o mesmo também deverá cadastrar um link default (Ex:\n              “evernote.com”) e opcionalmente uma data limite de funcionamento\n              do link.\n            "
           )
         ]),
         _vm._v(" "),
         _c("li", [
           _vm._v(
-            'O sistema deverá redirecionar cada acesso no “link de entrada” para o primeiro “link de saída" que ainda não teve seu limite atingido e incrementar seu contador.'
+            '\n              O sistema deverá redirecionar cada acesso no “link de entrada”\n              para o primeiro “link de saída" que ainda não teve seu limite\n              atingido e incrementar seu contador.\n            '
           )
         ]),
         _vm._v(" "),
         _c("li", [
           _vm._v(
-            "Assim que todos os “links de saída” já tiverem sido esgotados todo acesso será redirecionado para o “link default ”."
+            "\n              Assim que todos os “links de saída” já tiverem sido esgotados\n              todo acesso será redirecionado para o “link default ”.\n            "
           )
         ]),
         _vm._v(" "),
         _c("li", [
           _vm._v(
-            "O usuário poderá editar o nome dos links e a quantidade máxima de redirecionamento de cada link após sua criação, podendo também adicionar novos “links de saída” na sua edição."
+            "\n              O usuário poderá editar o nome dos links e a quantidade máxima\n              de redirecionamento de cada link após sua criação, podendo\n              também adicionar novos “links de saída” na sua edição.\n            "
           )
         ]),
         _vm._v(" "),
         _c("li", [
           _vm._v(
-            "Caso a data limite tenha sido configurado e a mesma tenha sido atingida o sistema deverá redirecionar para o link default  mesmo que os “links de saída” ainda não tenham sido esgotados"
+            "\n              Caso a data limite tenha sido configurado e a mesma tenha sido\n              atingida o sistema deverá redirecionar para o link default mesmo\n              que os “links de saída” ainda não tenham sido esgotados\n            "
           )
         ]),
         _vm._v(" "),
         _c("li", [
           _vm._v(
-            "O usuário poderá desativar o “link de redirecionamento” fazendo com que o mesmo passe a redirecionar para o link default."
+            "\n              O usuário poderá desativar o “link de redirecionamento” fazendo\n              com que o mesmo passe a redirecionar para o link default.\n            "
           )
         ])
       ])
@@ -43474,128 +43587,90 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", [
     _c("form", [
+      _c("strong", [_vm._v("Link de Entrada")]),
+      _vm._v(" "),
+      _c("input", {
+        staticClass: "form-control",
+        attrs: {
+          type: "text",
+          placeholder: "Link de Entrada",
+          id: "redirect_url",
+          disabled: ""
+        }
+      }),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("strong", [_vm._v("Título do Link")]),
+      _vm._v(" "),
+      _c("input", {
+        staticClass: "form-control",
+        attrs: {
+          type: "text",
+          id: "title",
+          name: "title",
+          placeholder: "Digite um Link"
+        }
+      }),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
       _c(
         "div",
-        {
-          staticClass: "offcanvas offcanvas-end",
-          attrs: { tabindex: "2", id: "offcanvasRight" }
-        },
+        { staticClass: "form-group" },
         [
-          _vm._m(0),
+          _c("h5", { staticClass: "text-primary" }, [_vm._v("URL original")]),
           _vm._v(" "),
-          _c("div", { staticClass: "offcanvas-body" }, [
-            _c("strong", [_vm._v("Link de Entrada")]),
-            _vm._v(" "),
-            _c("input", {
-              staticClass: "form-control",
-              attrs: {
-                type: "text",
-                placeholder: "Link de Entrada",
-                id: "redirect_url",
-                disabled: ""
-              }
-            }),
-            _vm._v(" "),
-            _c("br"),
-            _vm._v(" "),
-            _c("strong", [_vm._v("Título do Link")]),
-            _vm._v(" "),
-            _c("input", {
-              staticClass: "form-control",
-              attrs: {
-                type: "text",
-                id: "title",
-                name: "title",
-                placeholder: "Digite um Link"
-              }
-            }),
-            _vm._v(" "),
-            _c("br"),
-            _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "form-group" },
-              [
-                _c("h5", { staticClass: "text-primary" }, [
-                  _vm._v("URL original")
-                ]),
-                _vm._v(" "),
-                _c("p", { staticClass: "text-gray" }, [
-                  _vm._v(
-                    "Você poderá inserir uma ou várias URL's, faça como desejar. Lembre-se de inserir a quantidade de cliques junto à URL."
-                  )
-                ]),
-                _vm._v(" "),
-                _c("vc-index-links")
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c("hr"),
-            _vm._v(" "),
-            _c("h5", { staticClass: "text-primary" }, [_vm._v("URL Default")]),
-            _vm._v(" "),
-            _c("p", { staticClass: "text-gray" }, [
-              _vm._v(
-                "Essa URL será associada ao redirecionamento apenas quando todas as outrsa chegarem ao limite de cliques. Ela será a uma url fix sem limitações."
-              )
-            ]),
-            _vm._v(" "),
-            _c("input", {
-              staticClass: "form-control",
-              attrs: {
-                type: "url",
-                id: "url_default",
-                placeholder: "Insira a URL Default"
-              }
-            }),
-            _vm._v(" "),
-            _c("hr"),
-            _c("br"),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-primary btn-block pull-right",
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    return _vm.storeRedirects()
-                  }
-                }
-              },
-              [
-                _c("i", { staticClass: "fa fa-plus" }),
-                _vm._v(" Salvar Redirecionamento\n              ")
-              ]
+          _c("p", { staticClass: "text-gray" }, [
+            _vm._v(
+              "Você poderá inserir uma ou várias URL's, faça como desejar. Lembre-se de inserir a quantidade de cliques junto à URL."
             )
-          ])
-        ]
+          ]),
+          _vm._v(" "),
+          _c("vc-index-links")
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _c("h5", { staticClass: "text-primary" }, [_vm._v("URL Default")]),
+      _vm._v(" "),
+      _c("p", { staticClass: "text-gray" }, [
+        _vm._v(
+          "Essa URL será associada ao redirecionamento apenas quando todas as outrsa chegarem ao limite de cliques. Ela será a uma url fix sem limitações."
+        )
+      ]),
+      _vm._v(" "),
+      _c("input", {
+        staticClass: "form-control",
+        attrs: {
+          type: "url",
+          id: "url_default",
+          placeholder: "Insira a URL Default"
+        }
+      }),
+      _vm._v(" "),
+      _c("hr"),
+      _c("br"),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-primary btn-block pull-right text-white",
+          attrs: { type: "button" },
+          on: {
+            click: function($event) {
+              return _vm.storeRedirects()
+            }
+          }
+        },
+        [_vm._v("\n            Salvar Redirecionamento\n        ")]
       )
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "offcanvas-header bg-dark text-white" }, [
-      _c("h5", [_vm._v("Criação de Link")]),
-      _vm._v(" "),
-      _c("hr"),
-      _vm._v(" "),
-      _c("button", {
-        staticClass: "btn-close text-reset",
-        attrs: {
-          type: "button",
-          "data-bs-dismiss": "offcanvas",
-          "aria-label": "Close"
-        }
-      })
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -43678,28 +43753,54 @@ var render = function() {
         )
       ]),
       _vm._v(" "),
+      _c("div", { staticClass: "card col-md-5" }, [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-outline-dark",
+            attrs: {
+              type: "button",
+              align: "right",
+              "data-bs-toggle": "offcanvas",
+              "data-bs-target": "#offcanvasRight",
+              "aria-controls": "offcanvasRight"
+            }
+          },
+          [_vm._v("\n                  Criar Link\n              ")]
+        ),
+        _vm._v(" "),
+        _c("hr"),
+        _vm._v(" "),
+        _c("div", { attrs: { clas: "card" } }, [
+          _c("div", { staticClass: "card-title" }, [
+            _vm._v("\n                      Criar um Link\n                  ")
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "card-body" },
+            [_c("vc-create-redirections")],
+            1
+          )
+        ])
+      ]),
+      _vm._v(" "),
       _c(
         "div",
-        { staticClass: "card col-md-5" },
+        {
+          staticClass: "offcanvas offcanvas-end",
+          attrs: { tabindex: "2", id: "offcanvasRight" }
+        },
         [
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-outline-dark",
-              attrs: {
-                type: "button",
-                align: "right",
-                "data-bs-toggle": "offcanvas",
-                "data-bs-target": "#offcanvasRight",
-                "aria-controls": "offcanvasRight"
-              }
-            },
-            [_vm._v("\n                  Criar Link\n              ")]
-          ),
+          _vm._m(1),
           _vm._v(" "),
-          _c("vc-create-redirections")
-        ],
-        1
+          _c(
+            "div",
+            { staticClass: "offcanvas-body" },
+            [_c("vc-create-redirections")],
+            1
+          )
+        ]
       )
     ])
   ])
@@ -43722,6 +43823,23 @@ var staticRenderFns = [
           _c("small", {}, [_vm._v("Clique em temo real")])
         ])
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "offcanvas-header bg-dark text-white" }, [
+      _c("h5", [_vm._v("Criação de Link")]),
+      _vm._v(" "),
+      _c("button", {
+        staticClass: "btn-close text-reset",
+        attrs: {
+          type: "button",
+          "data-bs-dismiss": "offcanvas",
+          "aria-label": "Close"
+        }
+      })
     ])
   }
 ]
@@ -56555,14 +56673,15 @@ __webpack_require__.r(__webpack_exports__);
 /*!********************************************************!*\
   !*** ./resources/js/components/redirections/Index.vue ***!
   \********************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Index_vue_vue_type_template_id_756f0f16___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Index.vue?vue&type=template&id=756f0f16& */ "./resources/js/components/redirections/Index.vue?vue&type=template&id=756f0f16&");
 /* harmony import */ var _Index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Index.vue?vue&type=script&lang=js& */ "./resources/js/components/redirections/Index.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _Index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _Index_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -56592,7 +56711,7 @@ component.options.__file = "resources/js/components/redirections/Index.vue"
 /*!*********************************************************************************!*\
   !*** ./resources/js/components/redirections/Index.vue?vue&type=script&lang=js& ***!
   \*********************************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -56725,8 +56844,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! E:\laragon\www\linkgenerate\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! E:\laragon\www\linkgenerate\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\laragon\www\linkgenerate_laravel\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\laragon\www\linkgenerate_laravel\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
