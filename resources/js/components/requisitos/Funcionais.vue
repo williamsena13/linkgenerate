@@ -2,11 +2,10 @@
     <div>
         <h4>Requisitos funcionais:</h4>
         <ul>
-            <li>
+            <li class="text-success">
                 O usuário deverá ser capaz de criar um novo “link de
                 redirecionamento” podendo escolher seu nome e para o mesmo será
-                gerado um “link de entrada” (Ex:
-                “redirect.gdigital.com.br/abc123”). O mesmo poderá adicionar N
+                gerado um “link de entrada” (Ex: “redirect.gdigital.com.br/abc123”). O mesmo poderá adicionar N
                 links de saída, sendo que que para cada link de saída o mesmo
                 deve configurar uma quantidade maxima de redirecionamento (Ex:
                 “google.com.br”, 100; “facebook.com”, 200; “whatsapp.com”, 100)

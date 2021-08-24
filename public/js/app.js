@@ -6147,7 +6147,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Funcionais",
   props: {},
@@ -44133,9 +44132,9 @@ var staticRenderFns = [
       _c("h4", [_vm._v("Requisitos funcionais:")]),
       _vm._v(" "),
       _c("ul", [
-        _c("li", [
+        _c("li", { staticClass: "text-success" }, [
           _vm._v(
-            "\n            O usuário deverá ser capaz de criar um novo “link de\n            redirecionamento” podendo escolher seu nome e para o mesmo será\n            gerado um “link de entrada” (Ex:\n            “redirect.gdigital.com.br/abc123”). O mesmo poderá adicionar N\n            links de saída, sendo que que para cada link de saída o mesmo\n            deve configurar uma quantidade maxima de redirecionamento (Ex:\n            “google.com.br”, 100; “facebook.com”, 200; “whatsapp.com”, 100)\n            e o mesmo também deverá cadastrar um link default (Ex:\n            “evernote.com”) e opcionalmente uma data limite de funcionamento\n            do link.\n        "
+            "\n            O usuário deverá ser capaz de criar um novo “link de\n            redirecionamento” podendo escolher seu nome e para o mesmo será\n            gerado um “link de entrada” (Ex: “redirect.gdigital.com.br/abc123”). O mesmo poderá adicionar N\n            links de saída, sendo que que para cada link de saída o mesmo\n            deve configurar uma quantidade maxima de redirecionamento (Ex:\n            “google.com.br”, 100; “facebook.com”, 200; “whatsapp.com”, 100)\n            e o mesmo também deverá cadastrar um link default (Ex:\n            “evernote.com”) e opcionalmente uma data limite de funcionamento\n            do link.\n        "
           )
         ]),
         _vm._v(" "),
