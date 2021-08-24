@@ -5,15 +5,20 @@
  */
 
 import '@fortawesome/fontawesome-free/css/all.css'
+import Vue from 'vue';
 
 require('./bootstrap');
 
 window.Vue = require('vue');
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('vc-index', require('./components/Index.vue').default);
+
 Vue.component('vc-home', require('./components/Home.vue').default);
+Vue.component('vc-navbar', require('./components/Navbar.vue').default);
 Vue.component('vc-contato', require('./components/Contato.vue').default);
 
+Vue.component('vc-requisitos-funcionais', require('./components/requisitos/Funcionais').default);
+Vue.component('vc-requisitos-tecnicos', require('./components/requisitos/Tecnicos').default);
 
 Vue.component('vc-index-redirections', require('./components/redirections/Index.vue').default);
 Vue.component('vc-create-redirections', require('./components/redirections/Create.vue').default);

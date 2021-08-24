@@ -7,6 +7,7 @@
             <div class="list-group col-md-7">
                 <table class="table table-responsive list-group-item list-group-item-action">
                     <thead>
+
                         <tr class="row">
                             <th>
                                 <h5 class="text-primary"><strong id="count_redirect"></strong> Links</h5>
@@ -40,10 +41,8 @@
 
                 <hr>
 
-                <div clas="card">
-                    <div class="card-title">
-                        Criar um Link
-                    </div>
+                <div class="card visually-hidden" id="card-hidden">
+
                     <div class="card-body">
                         <vc-create-redirections></vc-create-redirections>
                     </div>
@@ -116,20 +115,25 @@ export default {
           //
           try {
             let url = "/redirections/"+id+"/edit";//"http://localhost:8000/redirections/"+id+"/edit";
+
+            document.getElementById('card-hidden').className = "card visually-hidden";
             axios.get(url)
                 .then( response => {
                     try {
+                        document.getElementById('card-hidden').className = "card";
                         console.log( 'Sucesso ao Editar' )
                         console.log( response );
                         let object = response.data;
                         LinksCreate.methods.populace( object.redirect_url, object.title, object.default_url, object.itens)
                     } catch (error) {
                         console.log( "Erro ao atriburi linsk", error)
+                        document.getElementById('card-hidden').className = "card visually-hidden";
                     }
 
                 })
                 .catch( error => {
                     console.log("Error", error)
+                    document.getElementById('card-hidden').className = "card visually-hidden";
                 });
           } catch( error ) {
               console.log('Erro ao buscar' , id)
